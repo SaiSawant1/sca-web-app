@@ -13,10 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Store {
+model Organization {
   id            String  @id @default(cuid())
   email         String  @unique
   name          String?
   address       String?
   inventoryLink String?
+  password      String
 }
