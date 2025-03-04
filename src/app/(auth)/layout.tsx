@@ -3,10 +3,5 @@ interface AuthLayoutProps {
 }
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
-  return (
-    <div>
-      <div>Layout</div>
-      {children}
-    </div>
-  );
+  return <div className="w-full h-full">{children}</div>;
 }
