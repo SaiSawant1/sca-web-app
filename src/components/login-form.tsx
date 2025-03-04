@@ -26,7 +26,7 @@ const LoginFormSchema = z.object({
 
 type LoginFormType = z.infer<typeof LoginFormSchema>;
 
-export const SignupForm = () => {
+export const LoginForm = () => {
   const [error, setError] = useState("");
   const router = useRouter();
   const { execute } = useSafeAction(LoginAction, {
