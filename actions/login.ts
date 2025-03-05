@@ -28,7 +28,7 @@ async function handler(input: InputType): Promise<ReturnType> {
     return { error: "Incorrect Password." };
   }
 
-  setSession(organization);
+  await setSession(organization);
   return { data: organization };
 }
 

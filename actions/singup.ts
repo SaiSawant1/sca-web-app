@@ -25,7 +25,7 @@ async function handler(input: InputType): Promise<ReturnType> {
     return { error: "Failed to Signup." };
   }
 
-  setSession(organization);
+  await setSession(organization);
   return { data: organization };
 }
 

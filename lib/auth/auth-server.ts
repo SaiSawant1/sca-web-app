@@ -73,3 +73,12 @@ export const getSession = async (): Promise<CustomeJWTPayload | undefined> => {
     return payload;
   }
 };
+
+export const isAuthenticated = async (): Promise<boolean> => {
+  const session = await getSession();
+  if (session) {
+    return true;
+  } else {
+    return false;
+  }
+};
