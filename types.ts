@@ -10,3 +10,11 @@ export const LoginFormSchema = z.object({
   orgEmail: z.string().min(1),
   password: z.string().min(8),
 });
+
+export const UserSessionSchema = z.object({
+  ordId: z.string().min(1),
+  orgName: z.string().min(1),
+  orgEmail: z.string().min(1),
+});
+
+export type UserSessionType = z.infer<typeof UserSessionSchema>;
