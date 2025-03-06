@@ -12,7 +12,7 @@ export const LoginFormSchema = z.object({
 });
 
 export const UserSessionSchema = z.object({
-  ordId: z.string().min(1),
+  orgId: z.string().min(1),
   orgName: z.string().min(1),
   orgEmail: z.string().min(1),
 });
