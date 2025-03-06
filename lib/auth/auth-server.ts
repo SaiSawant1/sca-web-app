@@ -4,7 +4,7 @@ import { SignJWT, jwtVerify, JWTPayload } from "jose";
 import { cookies } from "next/headers";
 import { UserSessionType } from "../../types";
 
-type CustomeJWTPayload = JWTPayload & UserSessionType;
+export type CustomeJWTPayload = JWTPayload & UserSessionType;
 
 const signJasonWebToken = async (
   organization: Organization,
