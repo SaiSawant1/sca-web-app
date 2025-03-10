@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export const DashboardView = () => {
   const [view, setView] = useState<
-    "Overview" | "Analtics" | "Report" | "Notification"
+    "Overview" | "Analytics" | "Report" | "Notification"
   >("Overview");
   return (
     <div className="flex py-6">
@@ -20,13 +20,13 @@ export const DashboardView = () => {
             Overview
           </li>
           <li
-            onClick={() => setView("Analtics")}
+            onClick={() => setView("Analytics")}
             className={cn(
               " px-3 py-1 rounded-md text-gray-50/40 cursor-pointer transition-all ease-in-out",
-              view === "Analtics" && "bg-black text-white",
+              view === "Analytics" && "bg-black text-white",
             )}
           >
-            Analtics
+            Analytics
           </li>
           <li
             onClick={() => setView("Report")}
