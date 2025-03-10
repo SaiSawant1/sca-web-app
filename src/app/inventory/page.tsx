@@ -1,3 +1,4 @@
+import { DashboardView } from "@/components/dashboard-view";
 import { DatePickerRange } from "@/components/date-range-picker";
 import { Button } from "@/components/ui/button";
 
@@ -13,6 +14,7 @@ export default function InventoryPage() {
           </Button>
         </div>
       </div>
+      <DashboardView />
     </div>
   );
 }
