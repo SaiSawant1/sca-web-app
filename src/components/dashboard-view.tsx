@@ -1,18 +1,15 @@
-"use client";
-import { useState } from "react";
 import { DashboardViewSelector } from "./dashboard-view-selector";
 import { DashboardCards } from "./dashboard-cards";
-import { CurrentView } from "./current-view";
+import { Overview } from "./overview";
+import ProductsView from "./products-view";
 
-export const DashboardView = () => {
-  const [view, setView] = useState<
-    "Overview" | "Products" | "Report" | "Notification"
-  >("Overview");
+export const DashboardView = ({ view }: { view: string }) => {
   return (
     <div className="py-6">
-      <DashboardViewSelector view={view} setView={setView} />
+      <DashboardViewSelector currentView={view} />
       <DashboardCards />
-      <CurrentView view={view} />
+      {view === "Overview" && <Overview />}
+      {view === "Products" && <ProductsView />}
     </div>
   );
 };

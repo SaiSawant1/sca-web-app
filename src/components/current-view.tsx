@@ -1,15 +1,7 @@
 "use client";
-import { Overview } from "./overview";
-import { ProductsView } from "./products-view";
 interface CurrentViewProps {
-  view: "Overview" | "Products" | "Report" | "Notification";
+  children: React.ReactNode;
 }
-export const CurrentView = ({ view }: CurrentViewProps) => {
-  if (view == "Overview") {
-    return <Overview />;
-  } else if (view = "Products") {
-    return <ProductsView />;
-  } else {
-    return <Overview />;
-  }
+export const CurrentView = ({ children }: CurrentViewProps) => {
+  return (<>{children}</>);
 };

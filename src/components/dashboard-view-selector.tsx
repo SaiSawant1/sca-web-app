@@ -1,16 +1,19 @@
+"use client";
 import { cn } from "@/lib/utils";
-import { Dispatch, SetStateAction } from "react";
+import { useRouter } from "next/navigation";
 
 interface DashboardViewSelectorProps {
-  view: "Overview" | "Products" | "Report" | "Notification";
-  setView: Dispatch<
-    SetStateAction<"Overview" | "Products" | "Report" | "Notification">
-  >;
+  currentView: string;
 }
 export const DashboardViewSelector = ({
-  view,
-  setView,
+  currentView,
 }: DashboardViewSelectorProps) => {
+  const router = useRouter();
+  const setView = (view: string) => {
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.set("view", view);
+    router.push(`?${searchParams.toString()}`);
+  };
   return (
     <div className="w-fit bg-gray-800 py-2  px-4 rounded-md">
       <ul className="flex gap-4 font-semibold ">
@@ -18,7 +21,7 @@ export const DashboardViewSelector = ({
           onClick={() => setView("Overview")}
           className={cn(
             " px-3 py-1 rounded-md text-gray-50/40 cursor-pointer transition-all ease-in-out",
-            view === "Overview" && "bg-black text-white",
+            currentView === "Overview" && "bg-black text-white",
           )}
         >
           Overview
@@ -27,7 +30,7 @@ export const DashboardViewSelector = ({
           onClick={() => setView("Products")}
           className={cn(
             " px-3 py-1 rounded-md text-gray-50/40 cursor-pointer transition-all ease-in-out",
-            view === "Products" && "bg-black text-white",
+            currentView === "Products" && "bg-black text-white",
           )}
         >
           Products
@@ -36,7 +39,7 @@ export const DashboardViewSelector = ({
           onClick={() => setView("Report")}
           className={cn(
             " px-3 py-1 rounded-md text-gray-50/40 cursor-pointer transition-all ease-in-out",
-            view === "Report" && "bg-black text-white",
+            currentView === "Report" && "bg-black text-white",
           )}
         >
           Report
@@ -45,7 +48,7 @@ export const DashboardViewSelector = ({
           onClick={() => setView("Notification")}
           className={cn(
             " px-3 py-1 rounded-md text-gray-50/40 cursor-pointer transition-all ease-in-out",
-            view === "Notification" && "bg-black text-white",
+            currentView === "Notification" && "bg-black text-white",
           )}
         >
           Notification

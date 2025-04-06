@@ -1,7 +1,7 @@
 import { Product } from "./tables/products/columns";
-import { ProductTablePage } from "./tables/products/product-table";
+import ProductTablePage from "./tables/products/product-table";
 
-function getData(): Product[] {
+async function getData(): Promise<Product[]> {
   return [
     {
       id: "1",
@@ -85,7 +85,7 @@ function getData(): Product[] {
     },
   ];
 }
-export const ProductsView = () => {
-  const data = getData();
+export default async function ProductsView() {
+  const data = await getData();
   return <ProductTablePage data={data} />;
-};
+}
