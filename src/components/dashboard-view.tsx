@@ -6,13 +6,13 @@ import { CurrentView } from "./current-view";
 
 export const DashboardView = () => {
   const [view, setView] = useState<
-    "Overview" | "Analytics" | "Report" | "Notification"
+    "Overview" | "Products" | "Report" | "Notification"
   >("Overview");
   return (
     <div className="py-6">
       <DashboardViewSelector view={view} setView={setView} />
       <DashboardCards />
-      <CurrentView />
+      <CurrentView view={view} />
     </div>
   );
 };

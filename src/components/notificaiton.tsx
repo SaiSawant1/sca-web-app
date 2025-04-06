@@ -1,17 +1,20 @@
-import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Avatar, AvatarImage } from "./ui/avatar";
 
 interface NotificationProps {
   name: string;
   email: string;
   profit: string;
+  avatar: string;
 }
 
-export const Notification = ({ email, name, profit }: NotificationProps) => {
+export const Notification = (
+  { email, name, profit, avatar }: NotificationProps,
+) => {
   return (
     <div className="flex w-full p-2">
       <div className="flex justify-center items-center gap-2 w-full">
         <Avatar>
-          <AvatarFallback />
+          <AvatarImage src={avatar} />
         </Avatar>
         <div className="w-full flex justify-between items-center ">
           <div>

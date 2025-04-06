@@ -2,9 +2,9 @@ import { cn } from "@/lib/utils";
 import { Dispatch, SetStateAction } from "react";
 
 interface DashboardViewSelectorProps {
-  view: "Overview" | "Analytics" | "Report" | "Notification";
+  view: "Overview" | "Products" | "Report" | "Notification";
   setView: Dispatch<
-    SetStateAction<"Overview" | "Analytics" | "Report" | "Notification">
+    SetStateAction<"Overview" | "Products" | "Report" | "Notification">
   >;
 }
 export const DashboardViewSelector = ({
@@ -24,13 +24,13 @@ export const DashboardViewSelector = ({
           Overview
         </li>
         <li
-          onClick={() => setView("Analytics")}
+          onClick={() => setView("Products")}
           className={cn(
             " px-3 py-1 rounded-md text-gray-50/40 cursor-pointer transition-all ease-in-out",
-            view === "Analytics" && "bg-black text-white",
+            view === "Products" && "bg-black text-white",
           )}
         >
-          Analytics
+          Products
         </li>
         <li
           onClick={() => setView("Report")}

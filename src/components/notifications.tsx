@@ -8,16 +8,66 @@ import {
 } from "./ui/card";
 
 const data = [
-  { name: "sai", email: "saisawant2003@gmail.com", profit: "9000" },
-  { name: "alex", email: "alex.johnson@example.com", profit: "12000" },
-  { name: "mira", email: "mira.patel@example.com", profit: "8500" },
-  { name: "ryan", email: "ryan.lee@example.com", profit: "7600" },
-  { name: "lena", email: "lena.martinez@example.com", profit: "10500" },
-  { name: "tom", email: "tom.anderson@example.com", profit: "9200" },
-  { name: "nina", email: "nina.kim@example.com", profit: "11100" },
-  { name: "dan", email: "daniel.nguyen@example.com", profit: "9800" },
-  { name: "emma", email: "emma.wilson@example.com", profit: "8900" },
-  { name: "leo", email: "leo.thomas@example.com", profit: "10200" },
+  {
+    name: "sai",
+    email: "saisawant2003@gmail.com",
+    profit: "9000",
+    avatar: "/01.png",
+  },
+  {
+    name: "alex",
+    email: "alex.johnson@example.com",
+    profit: "12000",
+    avatar: "/01.png",
+  },
+  {
+    name: "mira",
+    email: "mira.patel@example.com",
+    profit: "8500",
+    avatar: "/02.png",
+  },
+  {
+    name: "ryan",
+    email: "ryan.lee@example.com",
+    profit: "7600",
+    avatar: "/01.png",
+  },
+  {
+    name: "lena",
+    email: "lena.martinez@example.com",
+    profit: "10500",
+    avatar: "/01.png",
+  },
+  {
+    name: "tom",
+    email: "tom.anderson@example.com",
+    profit: "9200",
+    avatar: "/02.png",
+  },
+  {
+    name: "nina",
+    email: "nina.kim@example.com",
+    profit: "11100",
+    avatar: "/01.png",
+  },
+  {
+    name: "dan",
+    email: "daniel.nguyen@example.com",
+    profit: "9800",
+    avatar: "/02.png",
+  },
+  {
+    name: "emma",
+    email: "emma.wilson@example.com",
+    profit: "8900",
+    avatar: "/01.png",
+  },
+  {
+    name: "leo",
+    email: "leo.thomas@example.com",
+    profit: "10200",
+    avatar: "/02.png",
+  },
 ];
 
 export const Notifications = () => {
@@ -34,6 +84,7 @@ export const Notifications = () => {
             email={item.email}
             name={item.name}
             profit={item.profit}
+            avatar={item.avatar}
           />
         ))}
       </CardContent>
