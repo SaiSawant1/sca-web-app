@@ -2,10 +2,10 @@ import { DashboardView } from "@/components/dashboard-view";
 import { DatePickerRange } from "@/components/date-range-picker";
 import { Button } from "@/components/ui/button";
 
-export default function InventoryPage(
+export default async function InventoryPage(
   { searchParams }: { searchParams: { view: string } },
 ) {
-  const view = searchParams.view || "Overview";
+  const view = (await searchParams).view || "Overview";
   return (
     <div className="px-10 py-4">
       <div className="flex justify-between items-center">
