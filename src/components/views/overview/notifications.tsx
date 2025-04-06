@@ -1,11 +1,11 @@
-import { Notification } from "./notificaiton";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./ui/card";
+} from "@/components/ui/card";
+import { Notification } from "./notificaiton";
 
 const data = [
   {

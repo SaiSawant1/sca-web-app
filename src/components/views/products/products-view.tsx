@@ -1,5 +1,5 @@
-import { Product } from "./tables/products/columns";
-import ProductTablePage from "./tables/products/product-table";
+import { Product } from "@/components/tables/products/columns";
+import ProductTablePage from "@/components/tables/products/product-table";
 
 async function getData(): Promise<Product[]> {
   return [
