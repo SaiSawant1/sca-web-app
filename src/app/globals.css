@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 html,
 body,
 :root {
@@ -71,6 +72,7 @@ body,
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

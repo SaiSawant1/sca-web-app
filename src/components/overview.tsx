@@ -1,10 +1,11 @@
 import { BarChartView } from "./bar-chart";
+import { Notifications } from "./notifications";
 
 export const Overview = () => {
   return (
-    <div className="flex justify-center items-center">
+    <div className="grid md:grid-cols-2 gap-3">
       <BarChartView />
-      <div className="flex-1">Notifications</div>
+      <Notifications />
     </div>
   );
 };
