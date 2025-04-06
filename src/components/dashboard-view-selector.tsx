@@ -44,15 +44,6 @@ export const DashboardViewSelector = ({
         >
           Report
         </li>
-        <li
-          onClick={() => setView("Notification")}
-          className={cn(
-            " px-3 py-1 rounded-md text-gray-50/40 cursor-pointer transition-all ease-in-out",
-            currentView === "Notification" && "bg-black text-white",
-          )}
-        >
-          Notification
-        </li>
       </ul>
     </div>
   );
