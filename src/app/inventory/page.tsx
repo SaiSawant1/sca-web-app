@@ -11,7 +11,7 @@ export default async function InventoryPage(
       <div className="flex justify-between items-center">
         <h1 className="font-bold text-5xl">Dashboard</h1>
         <div className="flex items-center gap-4">
-          <DatePickerRange className="dark" />
+          <DatePickerRange />
           <Button size={"lg"} variant={"secondary"}>
             Download
           </Button>

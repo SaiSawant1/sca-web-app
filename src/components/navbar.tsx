@@ -1,36 +1,36 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Input } from "./ui/input";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { ModeToggle } from "./ui/mode-toggle";
 
 export const Navbar = () => {
   const path = usePathname();
   return (
-    <nav className="w-full flex justify-between items-center border-gray-50/40 border-[1px] px-10 py-2 text-xl rounded-md font-bold">
+    <nav className="w-full flex justify-between items-center border-gray-50/40 border-[1px] px-10 py-2 text-xl rounded-md transition-all ease-in">
       <div>
-        <ul className="flex gap-10 text-gray-50/40 cursor-pointer">
+        <ul className="flex gap-10  cursor-pointer">
           <li
             className={cn(
-              "hover:text-white transition-all ease-in",
-              path === "/inventory" && "text-white",
+              "hover:font-bold transition-all ease-in",
+              path === "/inventory" && "font-bold",
             )}
           >
             <Link href={"/"}>overview</Link>
           </li>
           <li
             className={cn(
-              "hover:text-white transition-all ease-in",
-              path === "/customers" && "text-white",
+              "hover:font-bold transition-all ease-in",
+              path === "/customers" && "font-bold",
             )}
           >
             <Link href={"/customers"}>customers</Link>
           </li>
           <li
             className={cn(
-              "hover:text-white transition-all ease-in",
-              path === "/settings" && "text-white",
+              "hover:font-bold transition-all ease-in",
+              path === "/settings" && "font-bold",
             )}
           >
             <Link href={"/settings"}>settings</Link>
@@ -38,10 +38,7 @@ export const Navbar = () => {
         </ul>
       </div>
       <div className="flex gap-10">
-        <Input
-          className="border-gray-50/40 border-[1px] "
-          placeholder="search..."
-        />
+        <ModeToggle />
         <Avatar>
           <AvatarImage
             className="w-10 h-10 rounded-full"
