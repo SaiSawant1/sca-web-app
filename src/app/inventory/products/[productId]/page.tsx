@@ -10,6 +10,7 @@ import Link from "next/link";
 import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { SparklesCore } from "@/components/ui/sparkles";
 import Image from "next/image";
+import { ProductAnalysis } from "@/components/products/product-analysis";
 
 // Dummy data for a single product
 const productData = {
@@ -188,11 +189,12 @@ export default function ProductPage() {
         className="w-full"
         onValueChange={() => {}}
       >
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="supplier">Supplier</TabsTrigger>
           <TabsTrigger value="specifications">Specifications</TabsTrigger>
           <TabsTrigger value="reviews">Reviews</TabsTrigger>
+          <TabsTrigger value="analysis">Analysis</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="mt-6">
@@ -422,6 +424,10 @@ export default function ProductPage() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="analysis" className="mt-6">
+          <ProductAnalysis />
         </TabsContent>
       </Tabs>
     </div>
