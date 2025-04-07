@@ -6,9 +6,17 @@ export default function InventoryLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-full w-full flex-col">
+    <div className="flex h-screen w-full flex-col overflow-hidden">
       <Navbar />
-      {children}
+      <div className="flex flex-1 overflow-hidden">
+        <div className="relative">
+          <div className="absolute left-4 top-4 z-10">
+          </div>
+        </div>
+        <main className="flex-1 overflow-auto">
+          {children}
+        </main>
+      </div>
     </div>
   );
 }

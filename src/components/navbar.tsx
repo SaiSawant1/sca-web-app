@@ -25,7 +25,7 @@ export const Navbar = () => {
               path === "/customers" && "font-bold",
             )}
           >
-            <Link href={"/customers"}>customers</Link>
+            <Link href={"/inventory/products"}>Products</Link>
           </li>
           <li
             className={cn(
