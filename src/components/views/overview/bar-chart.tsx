@@ -1,6 +1,6 @@
 "use client";
 
-import { TrendingUp, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { TrendingUp, ArrowUpRight, ArrowDownRight, DollarSign } from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
 
 const chartData = [
   { month: "January", sale: 186, previousYear: 165 },
@@ -55,10 +56,17 @@ export function BarChartView() {
   const isPositive = percentageChange > 0;
 
   return (
-    <Card className="flex-1">
+    <Card className="flex-1 transition-all duration-300 hover:shadow-lg">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <div className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Sales Overview</CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              Sales Overview
+            </CardTitle>
+            <Badge variant="outline" className="font-normal">
+              Monthly
+            </Badge>
+          </div>
           <CardDescription className="text-sm text-muted-foreground">
             Monthly sales performance comparison
           </CardDescription>
@@ -68,7 +76,7 @@ export function BarChartView() {
             <TooltipTrigger asChild>
               <Badge 
                 variant={isPositive ? "default" : "destructive"}
-                className="h-6 px-2 text-xs flex items-center gap-1"
+                className="h-6 px-2 text-xs flex items-center gap-1 transition-all duration-300 hover:scale-105"
               >
                 {isPositive ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
                 {Math.abs(percentageChange).toFixed(1)}%
@@ -80,6 +88,7 @@ export function BarChartView() {
           </Tooltip>
         </TooltipProvider>
       </CardHeader>
+      <Separator className="my-2" />
       <CardContent className="pb-4">
         <div className="h-[300px] mt-4">
           <ResponsiveContainer width="100%" height="100%">
@@ -97,6 +106,7 @@ export function BarChartView() {
                   vertical={false} 
                   stroke="hsl(var(--border))" 
                   strokeDasharray="4" 
+                  opacity={0.5}
                 />
                 <YAxis 
                   dataKey="sale" 
@@ -104,6 +114,7 @@ export function BarChartView() {
                   axisLine={false}
                   stroke="hsl(var(--muted-foreground))"
                   fontSize={12}
+                  tickFormatter={(value) => `$${value}`}
                 />
                 <XAxis
                   dataKey="month"
@@ -123,12 +134,14 @@ export function BarChartView() {
                   fill="hsl(var(--muted))" 
                   radius={[4, 4, 0, 0]} 
                   maxBarSize={40}
+                  animationDuration={1500}
                 />
                 <Bar 
                   dataKey="sale" 
                   fill="hsl(var(--primary))" 
                   radius={[4, 4, 0, 0]}
                   maxBarSize={40}
+                  animationDuration={1500}
                 >
                   <LabelList
                     dataKey="sale"
@@ -136,6 +149,7 @@ export function BarChartView() {
                     offset={8}
                     className="fill-muted-foreground"
                     fontSize={11}
+                    formatter={(value: number) => `$${value}`}
                   />
                 </Bar>
               </BarChart>
@@ -143,15 +157,17 @@ export function BarChartView() {
           </ResponsiveContainer>
         </div>
       </CardContent>
-      <CardFooter className="flex items-center justify-between border-t pt-4">
+      <Separator className="my-2" />
+      <CardFooter className="flex items-center justify-between pt-4">
         <div className="flex flex-col gap-1">
-          <div className="text-sm font-medium">Total Sales</div>
-          <div className="text-2xl font-bold">
-            ${currentTotal.toLocaleString()}
+          <div className="text-sm font-medium text-muted-foreground">Total Sales</div>
+          <div className="flex items-center gap-1 text-2xl font-bold">
+            <DollarSign className="h-5 w-5 text-primary" />
+            {currentTotal.toLocaleString()}
           </div>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <TrendingUp className="h-4 w-4" />
+          <TrendingUp className="h-4 w-4 text-primary" />
           <span>Updated just now</span>
         </div>
       </CardFooter>
