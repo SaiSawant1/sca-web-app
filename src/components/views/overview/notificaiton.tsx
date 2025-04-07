@@ -1,29 +1,35 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 interface NotificationProps {
   name: string;
   email: string;
   profit: string;
   avatar: string;
+  time: string;
 }
 
 export const Notification = (
-  { email, name, profit, avatar }: NotificationProps,
+  { email, name, profit, avatar, time }: NotificationProps,
 ) => {
   return (
-    <div className="flex w-full p-2">
-      <div className="flex justify-center items-center gap-2 w-full">
-        <Avatar>
-          <AvatarImage src={avatar} />
+    <div className="flex w-full py-4 first:pt-0 last:pb-0">
+      <div className="flex items-start gap-4 w-full group">
+        <Avatar className="h-9 w-9">
+          <AvatarImage src={avatar} alt={name} />
         </Avatar>
-        <div className="w-full flex justify-between items-center ">
-          <div>
-            <div>{name}</div>
-            <div className="text-slate-600">{email}</div>
-          </div>
-          <div className="font-bold">
-            +{profit}$
-          </div>
+        <div className="flex-1 space-y-1">
+          <p className="text-sm font-medium leading-none">{name}</p>
+          <p className="text-sm text-muted-foreground">{email}</p>
+        </div>
+        <div className="flex flex-col items-end gap-1">
+          <span className={cn(
+            "text-sm font-medium",
+            parseInt(profit) > 10000 ? "text-green-600 dark:text-green-500" : ""
+          )}>
+            +${parseInt(profit).toLocaleString()}
+          </span>
+          <span className="text-xs text-muted-foreground">{time}</span>
         </div>
       </div>
     </div>
