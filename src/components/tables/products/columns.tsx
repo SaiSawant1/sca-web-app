@@ -3,8 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Package, DollarSign, TrendingUp, Box, MoreHorizontal } from "lucide-react";
 import { ActionDropdown } from "./action-dropdown";
+import { Badge } from "@/components/ui/badge";
 
 export type Product = {
   id: string;
@@ -24,6 +25,7 @@ export const columns: ColumnDef<Product>[] = [
           (table.getIsSomePageRowsSelected() && "indeterminate")}
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
+        className="translate-y-[2px]"
       />
     ),
     cell: ({ row }) => (
@@ -31,16 +33,56 @@ export const columns: ColumnDef<Product>[] = [
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
+        className="translate-y-[2px]"
       />
     ),
+    enableSorting: false,
+    enableHiding: false,
   },
   {
     accessorKey: "id",
-    header: "Product Id",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="flex items-center gap-1 font-medium"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <Package className="h-4 w-4" />
+          <span>Product ID</span>
+          <ArrowUpDown className="ml-1 h-3 w-3" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <div className="font-medium">
+          {row.getValue("id")}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "product",
-    header: "Name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="flex items-center gap-1 font-medium"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          <span>Product Name</span>
+          <ArrowUpDown className="ml-1 h-3 w-3" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      return (
+        <div className="font-medium">
+          {row.getValue("product")}
+        </div>
+      );
+    },
   },
   {
     accessorKey: "costPrice",
@@ -48,11 +90,12 @@ export const columns: ColumnDef<Product>[] = [
       return (
         <Button
           variant="ghost"
-          className="w-full text-right"
+          className="flex items-center gap-1 font-medium"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Cost Price
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <DollarSign className="h-4 w-4" />
+          <span>Cost Price</span>
+          <ArrowUpDown className="ml-1 h-3 w-3" />
         </Button>
       );
     },
@@ -62,7 +105,7 @@ export const columns: ColumnDef<Product>[] = [
         style: "currency",
         currency: "USD",
       }).format(amount);
-      return <div className="text-center font-medium">{formatted}</div>;
+      return <div className="font-medium text-right">{formatted}</div>;
     },
   },
   {
@@ -71,11 +114,12 @@ export const columns: ColumnDef<Product>[] = [
       return (
         <Button
           variant="ghost"
-          className="w-full text-center"
+          className="flex items-center gap-1 font-medium"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Selling Price
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <DollarSign className="h-4 w-4" />
+          <span>Selling Price</span>
+          <ArrowUpDown className="ml-1 h-3 w-3" />
         </Button>
       );
     },
@@ -85,7 +129,7 @@ export const columns: ColumnDef<Product>[] = [
         style: "currency",
         currency: "USD",
       }).format(amount);
-      return <div className="text-center font-medium">{formatted}</div>;
+      return <div className="font-medium text-right">{formatted}</div>;
     },
   },
   {
@@ -94,16 +138,24 @@ export const columns: ColumnDef<Product>[] = [
       return (
         <Button
           variant="ghost"
-          className="w-full text-center"
+          className="flex items-center gap-1 font-medium"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Total Sold
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <TrendingUp className="h-4 w-4" />
+          <span>Total Sold</span>
+          <ArrowUpDown className="ml-1 h-3 w-3" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      return <div className="text-center">{row.getValue("totalSold")}</div>;
+      const value = row.getValue("totalSold") as number;
+      return (
+        <div className="text-center">
+          <Badge variant={value > 100 ? "default" : "outline"}>
+            {value}
+          </Badge>
+        </div>
+      );
     },
   },
   {
@@ -112,16 +164,30 @@ export const columns: ColumnDef<Product>[] = [
       return (
         <Button
           variant="ghost"
-          className="w-full text-center"
+          className="flex items-center gap-1 font-medium"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Stock
-          <ArrowUpDown className="ml-2 h-4 w-4" />
+          <Box className="h-4 w-4" />
+          <span>Stock</span>
+          <ArrowUpDown className="ml-1 h-3 w-3" />
         </Button>
       );
     },
     cell: ({ row }) => {
-      return <div className="text-center">{row.getValue("stock")}</div>;
+      const value = row.getValue("stock") as number;
+      return (
+        <div className="text-center">
+          <Badge 
+            variant={
+              value > 50 ? "default" : 
+              value > 20 ? "secondary" : 
+              "destructive"
+            }
+          >
+            {value}
+          </Badge>
+        </div>
+      );
     },
   },
   {
@@ -129,5 +195,7 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       return <ActionDropdown id={row.getValue("id")} />;
     },
+    enableSorting: false,
+    enableHiding: false,
   },
 ];
