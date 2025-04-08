@@ -10,6 +10,64 @@ import { getSession } from "../lib/auth/auth-server";
 export type ProductInputType = z.infer<typeof ProductFormSchema>;
 export type ProductReturnType = ActionState<ProductInputType, Product>;
 
+// Function to fetch all products for the current organization
+export async function getProducts() {
+  try {
+    const user = await getSession();
+
+    if (!user) {
+      return { error: "You must be logged in to view products." };
+    }
+
+    const products = await prisma.product.findMany({
+      where: {
+        organizationId: user.orgId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return { products };
+  } catch (error) {
+    const errorMessage = error instanceof Error
+      ? error.message
+      : "Unknown error";
+    console.error("Error fetching products:", errorMessage);
+    return { error: "Failed to fetch products. Please try again." };
+  }
+}
+
+// Function to fetch a single product by ID
+export async function getProductById(productId: string) {
+  try {
+    const user = await getSession();
+
+    if (!user) {
+      return { error: "You must be logged in to view product details." };
+    }
+
+    const product = await prisma.product.findUnique({
+      where: {
+        id: productId,
+        organizationId: user.orgId,
+      },
+    });
+
+    if (!product) {
+      return { error: "Product not found." };
+    }
+
+    return { product };
+  } catch (error) {
+    const errorMessage = error instanceof Error
+      ? error.message
+      : "Unknown error";
+    console.error("Error fetching product:", errorMessage);
+    return { error: "Failed to fetch product details. Please try again." };
+  }
+}
+
 async function handler(input: ProductInputType): Promise<ProductReturnType> {
   try {
     // Ensure input is an object
