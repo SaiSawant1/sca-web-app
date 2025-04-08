@@ -18,6 +18,7 @@ import { useState } from "react";
 import { useSafeAction } from "../../hooks/use-safe-action";
 import { useRouter } from "next/navigation";
 import { LoginAction } from "../../actions/login";
+import { toast } from "sonner";
 
 const LoginFormSchema = z.object({
   email: z.string().min(1),
@@ -31,7 +32,12 @@ export const LoginForm = () => {
   const router = useRouter();
   const { execute } = useSafeAction(LoginAction, {
     onSuccess: () => {
+      toast.success("Logged in successfully");
       router.push("/");
+    },
+    onError: (error) => {
+      setError(error);
+      toast.error(`Login failed: ${error}`);
     },
   });
   const form = useForm<LoginFormType>({
@@ -44,9 +50,13 @@ export const LoginForm = () => {
 
   const onSubmit = async (value: LoginFormType) => {
     setError("");
-    await execute({
+    toast.promise(execute({
       orgEmail: value.email,
       password: value.password,
+    }), {
+      loading: "Logging in...",
+      success: "Logged in successfully",
+      error: (err) => `Login failed: ${err}`,
     });
   };
   return (

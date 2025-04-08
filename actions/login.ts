@@ -3,9 +3,9 @@ import { z } from "zod";
 import { LoginFormSchema } from "../types";
 import prisma from "../lib/prisma";
 import { Organization } from "@prisma/client";
-import { ActionState, CreateSafeAction } from "../lib/create-safe-action";
 import bcrypt from "bcryptjs";
 import { setSession } from "../lib/auth/auth-server";
+import { ActionState, createSafeAction } from "@/lib/create-safe-action";
 
 export type InputType = z.infer<typeof LoginFormSchema>;
 export type ReturnType = ActionState<InputType, Organization>;
@@ -32,4 +32,4 @@ async function handler(input: InputType): Promise<ReturnType> {
   return { data: organization };
 }
 
-export const LoginAction = CreateSafeAction(LoginFormSchema, handler);
+export const LoginAction = createSafeAction(LoginFormSchema, handler);

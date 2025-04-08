@@ -15,55 +15,60 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Package, DollarSign, Box, Tag, Image, Calendar, AlertCircle } from "lucide-react";
+import { Box, Calendar, DollarSign, Package } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { ProductFormSchema, type ProductFormType } from "./product-form-schema";
+import { CreateProductAction } from "@/actions/product";
+import * as z from "zod";
+import { useAction } from "@/hooks/use-action";
+import { ProductFormSchema } from "./product-form-schema";
+import { toast } from "sonner";
 
 export function ProductForm() {
   const [error, setError] = useState("");
   const router = useRouter();
-  
-  const form = useForm<ProductFormType>({
-    resolver: zodResolver(ProductFormSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      sku: "",
-      barcode: "",
-      category: "",
-      brand: "",
-      stock: 0,
-      reorderPoint: 10,
-      supplierAddress: "",
-      supplierName: "",
-      supplierContact: "",
-      sellingPrice: 0,
-      costPrice: 0,
-      taxRate: 0,
-      weight: 0,
-      dimensions: "",
-      isActive: true,
-      isFeatured: false,
-      images: [],
-      tags: [],
-      expiryDate: "",
+
+  const { execute, isLoading } = useAction(CreateProductAction, {
+    onSuccess: () => {
+      toast.success("Product created successfully");
+      router.push("/inventory/products");
+    },
+    onError: (error) => {
+      setError(error);
+      toast.error(`Failed to create product: ${error}`);
     },
   });
 
-  const onSubmit = async (values: ProductFormType) => {
+  const form = useForm<z.infer<typeof ProductFormSchema>>({
+    resolver: zodResolver(ProductFormSchema),
+    defaultValues: {
+      stock: 0,
+      reorderPoint: 0,
+      sellingPrice: 0,
+      costPrice: 0,
+      taxRate: 0,
+      isActive: true,
+      isFeatured: false,
+      image: "",
+      tags: [],
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof ProductFormSchema>) => {
     setError("");
-    try {
-      // Here you would call your server action to create the product
-      console.log("Form values:", values);
-      // Redirect to products page after successful creation
-      router.push("/inventory/products");
-    } catch (err) {
-      setError("Failed to create product. Please try again.");
-    }
+    toast.promise(execute(values), {
+      loading: "Creating product...",
+      success: "Product created successfully",
+      error: (err) => `Failed to create product: ${err}`,
+    });
   };
 
   return (
@@ -72,7 +77,7 @@ export function ProductForm() {
         <Package className="h-6 w-6 text-primary" />
         <h1 className="text-3xl font-bold tracking-tight">Add New Product</h1>
       </div>
-      
+
       <Card className="w-full">
         <CardHeader>
           <CardTitle>Product Information</CardTitle>
@@ -90,7 +95,7 @@ export function ProductForm() {
                   <TabsTrigger value="inventory">Inventory</TabsTrigger>
                   <TabsTrigger value="supplier">Supplier</TabsTrigger>
                 </TabsList>
-                
+
                 <TabsContent value="basic" className="space-y-4">
                   <FormField
                     control={form.control}
@@ -101,11 +106,14 @@ export function ProductForm() {
                         <FormControl>
                           <Input placeholder="Enter product name" {...field} />
                         </FormControl>
+                        <FormDescription>
+                          This is your product's display name.
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="description"
@@ -113,17 +121,20 @@ export function ProductForm() {
                       <FormItem>
                         <FormLabel>Description</FormLabel>
                         <FormControl>
-                          <Textarea 
-                            placeholder="Enter product description" 
-                            className="min-h-[100px]"
-                            {...field} 
+                          <Textarea
+                            placeholder="Enter product description"
+                            className="resize-none"
+                            {...field}
                           />
                         </FormControl>
+                        <FormDescription>
+                          Provide a detailed description of your product.
+                        </FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
@@ -132,13 +143,17 @@ export function ProductForm() {
                         <FormItem>
                           <FormLabel>SKU</FormLabel>
                           <FormControl>
-                            <Input placeholder="Stock Keeping Unit" {...field} />
+                            <Input placeholder="Enter SKU" {...field} />
                           </FormControl>
+                          <FormDescription>
+                            Stock Keeping Unit - unique identifier for your
+                            product.
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="barcode"
@@ -146,14 +161,17 @@ export function ProductForm() {
                         <FormItem>
                           <FormLabel>Barcode</FormLabel>
                           <FormControl>
-                            <Input placeholder="Product barcode" {...field} />
+                            <Input placeholder="Enter barcode" {...field} />
                           </FormControl>
+                          <FormDescription>
+                            Product barcode for scanning.
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
@@ -162,13 +180,16 @@ export function ProductForm() {
                         <FormItem>
                           <FormLabel>Category</FormLabel>
                           <FormControl>
-                            <Input placeholder="Product category" {...field} />
+                            <Input placeholder="Enter category" {...field} />
                           </FormControl>
+                          <FormDescription>
+                            Product category.
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="brand"
@@ -176,89 +197,64 @@ export function ProductForm() {
                         <FormItem>
                           <FormLabel>Brand</FormLabel>
                           <FormControl>
-                            <Input placeholder="Product brand" {...field} />
+                            <Input placeholder="Enter brand" {...field} />
                           </FormControl>
+                          <FormDescription>
+                            Product brand.
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
                       name="weight"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Weight (grams)</FormLabel>
+                          <FormLabel>Weight (kg)</FormLabel>
                           <FormControl>
-                            <Input type="number" placeholder="Product weight" {...field} />
+                            <Input
+                              type="number"
+                              placeholder="0.00"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(
+                                  e.target.value
+                                    ? parseFloat(e.target.value)
+                                    : undefined,
+                                )}
+                            />
                           </FormControl>
+                          <FormDescription>
+                            Product weight in kilograms.
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="dimensions"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Dimensions (LxWxH in cm)</FormLabel>
+                          <FormLabel>Dimensions</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g. 10x5x2" {...field} />
+                            <Input placeholder="L x W x H" {...field} />
                           </FormControl>
+                          <FormDescription>
+                            Product dimensions (length x width x height).
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="isActive"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                          <div className="space-y-0.5">
-                            <FormLabel className="text-base">Active</FormLabel>
-                            <FormDescription>
-                              Make this product available for sale
-                            </FormDescription>
-                          </div>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="isFeatured"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                          <div className="space-y-0.5">
-                            <FormLabel className="text-base">Featured</FormLabel>
-                            <FormDescription>
-                              Highlight this product on your store
-                            </FormDescription>
-                          </div>
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
                 </TabsContent>
-                
+
                 <TabsContent value="pricing" className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
@@ -270,19 +266,24 @@ export function ProductForm() {
                           <FormControl>
                             <div className="relative">
                               <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input 
-                                type="number" 
-                                placeholder="0.00" 
-                                className="pl-8" 
-                                {...field} 
+                              <Input
+                                type="number"
+                                placeholder="0.00"
+                                className="pl-8"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseFloat(e.target.value))}
                               />
                             </div>
                           </FormControl>
+                          <FormDescription>
+                            Selling price of the product.
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="costPrice"
@@ -292,20 +293,25 @@ export function ProductForm() {
                           <FormControl>
                             <div className="relative">
                               <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input 
-                                type="number" 
-                                placeholder="0.00" 
-                                className="pl-8" 
-                                {...field} 
+                              <Input
+                                type="number"
+                                placeholder="0.00"
+                                className="pl-8"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseFloat(e.target.value))}
                               />
                             </div>
                           </FormControl>
+                          <FormDescription>
+                            Cost price of the product.
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                  
+
                   <FormField
                     control={form.control}
                     name="taxRate"
@@ -313,10 +319,12 @@ export function ProductForm() {
                       <FormItem>
                         <FormLabel>Tax Rate (%)</FormLabel>
                         <FormControl>
-                          <Input 
-                            type="number" 
-                            placeholder="0" 
-                            {...field} 
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(parseFloat(e.target.value))}
                           />
                         </FormControl>
                         <FormMessage />
@@ -324,7 +332,7 @@ export function ProductForm() {
                     )}
                   />
                 </TabsContent>
-                
+
                 <TabsContent value="inventory" className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
@@ -332,23 +340,28 @@ export function ProductForm() {
                       name="stock"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Current Stock</FormLabel>
+                          <FormLabel>Stock</FormLabel>
                           <FormControl>
                             <div className="relative">
                               <Box className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input 
-                                type="number" 
-                                placeholder="0" 
-                                className="pl-8" 
-                                {...field} 
+                              <Input
+                                type="number"
+                                placeholder="0"
+                                className="pl-8"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value))}
                               />
                             </div>
                           </FormControl>
+                          <FormDescription>
+                            Current stock quantity.
+                          </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="reorderPoint"
@@ -357,24 +370,26 @@ export function ProductForm() {
                           <FormLabel>Reorder Point</FormLabel>
                           <FormControl>
                             <div className="relative">
-                              <AlertCircle className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input 
-                                type="number" 
-                                placeholder="10" 
-                                className="pl-8" 
-                                {...field} 
+                              <Box className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Input
+                                type="number"
+                                placeholder="0"
+                                className="pl-8"
+                                {...field}
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value))}
                               />
                             </div>
                           </FormControl>
                           <FormDescription>
-                            Alert when stock falls below this level
+                            Stock level at which to reorder.
                           </FormDescription>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                  
+
                   <FormField
                     control={form.control}
                     name="expiryDate"
@@ -384,10 +399,10 @@ export function ProductForm() {
                         <FormControl>
                           <div className="relative">
                             <Calendar className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input 
-                              type="date" 
-                              className="pl-8" 
-                              {...field} 
+                            <Input
+                              type="date"
+                              className="pl-8"
+                              {...field}
                             />
                           </div>
                         </FormControl>
@@ -399,7 +414,7 @@ export function ProductForm() {
                     )}
                   />
                 </TabsContent>
-                
+
                 <TabsContent value="supplier" className="space-y-4">
                   <FormField
                     control={form.control}
@@ -408,13 +423,16 @@ export function ProductForm() {
                       <FormItem>
                         <FormLabel>Supplier Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter supplier name" {...field} />
+                          <Input
+                            placeholder="Enter supplier name"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="supplierContact"
@@ -422,13 +440,16 @@ export function ProductForm() {
                       <FormItem>
                         <FormLabel>Supplier Contact</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter supplier contact information" {...field} />
+                          <Input
+                            placeholder="Enter supplier contact"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="supplierAddress"
@@ -436,10 +457,10 @@ export function ProductForm() {
                       <FormItem>
                         <FormLabel>Supplier Address</FormLabel>
                         <FormControl>
-                          <Textarea 
-                            placeholder="Enter supplier address" 
+                          <Textarea
+                            placeholder="Enter supplier address"
                             className="min-h-[100px]"
-                            {...field} 
+                            {...field}
                           />
                         </FormControl>
                         <FormMessage />
@@ -448,22 +469,24 @@ export function ProductForm() {
                   />
                 </TabsContent>
               </Tabs>
-              
+
               <Separator />
-              
+
               <div className="flex justify-end gap-4">
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={() => router.push("/inventory/products")}
                 >
                   Cancel
                 </Button>
-                <Button type="submit">Create Product</Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? "Creating..." : "Create Product"}
+                </Button>
               </div>
             </form>
           </Form>
-          
+
           {error && (
             <div className="mt-4 p-3 bg-destructive/10 text-destructive rounded-md">
               {error}
@@ -473,4 +496,4 @@ export function ProductForm() {
       </Card>
     </div>
   );
-} 
+}

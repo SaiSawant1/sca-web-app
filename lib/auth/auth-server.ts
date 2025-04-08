@@ -1,6 +1,6 @@
 "use server";
 import { Organization } from "@prisma/client";
-import { SignJWT, jwtVerify, JWTPayload } from "jose";
+import { JWTPayload, jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 import { UserSessionType } from "../../types";
 
