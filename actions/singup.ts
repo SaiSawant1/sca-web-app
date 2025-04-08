@@ -4,8 +4,8 @@ import { SignupFormSchema } from "../types";
 import prisma from "../lib/prisma";
 import bcrypt from "bcryptjs";
 import { Organization } from "@prisma/client";
-import { ActionState, CreateSafeAction } from "../lib/create-safe-action";
 import { setSession } from "../lib/auth/auth-server";
+import { ActionState, createSafeAction } from "@/lib/create-safe-action";
 
 export type InputType = z.infer<typeof SignupFormSchema>;
 export type ReturnType = ActionState<InputType, Organization>;
@@ -29,4 +29,4 @@ async function handler(input: InputType): Promise<ReturnType> {
   return { data: organization };
 }
 
-export const SignupAction = CreateSafeAction(SignupFormSchema, handler);
+export const SignupAction = createSafeAction(SignupFormSchema, handler);

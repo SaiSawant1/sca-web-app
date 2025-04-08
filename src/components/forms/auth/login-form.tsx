@@ -15,68 +15,57 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { SignupAction } from "../../actions/singup";
-import { useSafeAction } from "../../hooks/use-safe-action";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useAction } from "@/hooks/use-action";
+import Link from "next/link";
+import { LoginAction } from "../../../../actions/login";
 
-const SignupFormSchema = z.object({
-  name: z.string().min(1),
+const LoginFormSchema = z.object({
   email: z.string().min(1),
   password: z.string().min(1),
-  confirmationPassword: z.string().min(1),
 });
 
-type SignupFormType = z.infer<typeof SignupFormSchema>;
+type LoginFormType = z.infer<typeof LoginFormSchema>;
 
-export const SignupForm = () => {
+export const LoginForm = () => {
   const [error, setError] = useState("");
   const router = useRouter();
-  const { execute } = useSafeAction(SignupAction, {
+  const { execute } = useAction(LoginAction, {
     onSuccess: () => {
+      toast.success("Logged in successfully");
       router.push("/");
     },
+    onError: (error) => {
+      setError(error);
+      toast.error(`Login failed: ${error}`);
+    },
   });
-  const form = useForm<SignupFormType>({
-    resolver: zodResolver(SignupFormSchema),
+  const form = useForm<LoginFormType>({
+    resolver: zodResolver(LoginFormSchema),
     defaultValues: {
       password: "",
-      confirmationPassword: "",
-      name: "",
       email: "",
     },
   });
 
-  const onSubmit = async (value: SignupFormType) => {
+  const onSubmit = async (value: LoginFormType) => {
     setError("");
-    if (value.password !== value.confirmationPassword) {
-      setError("Password and Confirmation Password");
-      return;
-    }
-    await execute({
-      orgName: value.name,
-      orgEmail: value.email,
-      password: value.password,
-    });
+    toast.promise(
+      execute({
+        orgEmail: value.email,
+        password: value.password,
+      }),
+      {
+        loading: "Logging in...",
+        success: "Logged in successfully",
+        error: (err) => `Login failed: ${err}`,
+      },
+    );
   };
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Organization</FormLabel>
-              <FormControl>
-                <Input placeholder="Bussiness Name" {...field} />
-              </FormControl>
-              <FormDescription>
-                Please enter the name of your organization.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="email"
@@ -113,23 +102,15 @@ export const SignupForm = () => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="confirmationPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="password" {...field} />
-              </FormControl>
-              <FormDescription>
-                Please enter the Login password again.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
+        <div className="flex flex-col gap-4">
+          <Button type="submit">Submit</Button>
+          <p className="text-center text-sm text-muted-foreground">
+            Don't have an account?{" "}
+            <Link href="/signup" className="text-primary hover:underline">
+              Sign up
+            </Link>
+          </p>
+        </div>
       </form>
       {error}
     </Form>
