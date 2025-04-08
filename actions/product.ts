@@ -16,7 +16,6 @@ async function handler(input: ProductInputType): Promise<ProductReturnType> {
     if (!input || typeof input !== "object" || Array.isArray(input)) {
       return { error: "Invalid input data format" };
     }
-    console.log("input", input);
 
     // Get the current user's organization ID
     const user = await getSession();
