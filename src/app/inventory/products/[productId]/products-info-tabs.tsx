@@ -8,12 +8,68 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Product } from "@prisma/client";
 import { Truck, Users, Package, BarChart3, FileText, DollarSign, TrendingUp, ShoppingCart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface ProductsInfoTabsProps {
   product: Product;
 }
 
+interface PredictionResult {
+  predicted_demand: number;
+  error?: string;
+}
+
 export const ProductsInfoTabs = ({ product }: ProductsInfoTabsProps) => {
+  const [prediction, setPrediction] = useState<PredictionResult | null>(null);
+  const [isLoadingPrediction, setIsLoadingPrediction] = useState(false);
+  const [predictionError, setPredictionError] = useState<string | null>(null);
+
+  const fetchPrediction = async () => {
+    try {
+      setIsLoadingPrediction(true);
+      setPredictionError(null);
+
+      const response = await fetch('http://localhost:8080/api/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          category: product.category,
+          subcategory: product.subCategory,
+          region: product.region,
+          season: product.season,
+          warehouseId: 1, // Default warehouse ID
+          leadTime: 7, // Default lead time in days
+          supplierReliability: 0.9, // Default supplier reliability
+          price: product.sellingPrice,
+          stockLevel: product.stock,
+          transportCost: 10, // Default transport cost
+          promotion: 0, // Default promotion status
+          prevDemand1: product.totalSold, // Using total sold as previous demand
+          prevDemand2: Math.floor(product.totalSold * 0.9), // Estimated previous demand
+          prevDemand3: Math.floor(product.totalSold * 0.8), // Estimated previous demand
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch prediction');
+      }
+
+      const data = await response.json();
+      setPrediction(data);
+    } catch (error) {
+      setPredictionError(error instanceof Error ? error.message : 'Failed to fetch prediction');
+    } finally {
+      setIsLoadingPrediction(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPrediction();
+  }, [product]);
+
   const profitMargin = ((product.sellingPrice - product.costPrice) / product.sellingPrice) * 100;
   
   const stockStatus = product.stock > 20
@@ -321,7 +377,80 @@ export const ProductsInfoTabs = ({ product }: ProductsInfoTabsProps) => {
       </TabsContent>
 
       <TabsContent value="analysis" className="mt-0">
-        <ProductAnalysis />
+        <Card className="overflow-hidden">
+          <CardHeader className="bg-muted/50">
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="h-5 w-5" />
+              Demand Prediction
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            {isLoadingPrediction ? (
+              <div className="flex items-center justify-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            ) : predictionError ? (
+              <div className="text-center py-8 text-red-500">
+                <p>{predictionError}</p>
+                <Button 
+                  variant="outline" 
+                  className="mt-4"
+                  onClick={fetchPrediction}
+                >
+                  Retry
+                </Button>
+              </div>
+            ) : prediction ? (
+              <div className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card className="bg-muted/30">
+                    <CardContent className="p-4">
+                      <h3 className="text-lg font-medium mb-2">Predicted Demand</h3>
+                      <p className="text-3xl font-bold text-primary">
+                        {Math.round(prediction.predicted_demand)} units
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Expected demand for the next period
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card className="bg-muted/30">
+                    <CardContent className="p-4">
+                      <h3 className="text-lg font-medium mb-2">Current Stock</h3>
+                      <p className="text-3xl font-bold">
+                        {product.stock} units
+                      </p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Available inventory
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium">Prediction Factors</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Category</p>
+                      <p className="font-medium">{product.category}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Subcategory</p>
+                      <p className="font-medium">{product.subCategory || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Region</p>
+                      <p className="font-medium">{product.region || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Season</p>
+                      <p className="font-medium">{product.season || "N/A"}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </CardContent>
+        </Card>
       </TabsContent>
     </Tabs>
   );
