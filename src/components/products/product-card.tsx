@@ -9,32 +9,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2 } from "lucide-react";
 import Image from "next/image";
+import { Product } from "@prisma/client";
 
-export type ProductCardProps = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-  imageUrl: string;
-  onEdit?: (id: string) => void;
-  onDelete?: (id: string) => void;
-};
+interface ProductCardProps {
+  product: Product;
+}
 
 export function ProductCard({
-  id,
-  name,
-  description,
-  price,
-  stock,
-  imageUrl,
-  onEdit,
-  onDelete,
+  product,
 }: ProductCardProps) {
   const formattedPrice = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-  }).format(price);
+  }).format(product.sellingPrice);
 
   return (
     <Card className="overflow-hidden">
@@ -42,30 +29,29 @@ export function ProductCard({
         <Image
           width={1000}
           height={1000}
-          src={imageUrl}
-          alt={name}
+          src={product.image}
+          alt={product.name}
           className="h-full w-full object-cover transition-all hover:scale-105"
         />
       </div>
       <CardHeader className="p-4">
-        <CardTitle className="line-clamp-1">{name}</CardTitle>
+        <CardTitle className="line-clamp-1">{product.name}</CardTitle>
       </CardHeader>
       <CardContent className="p-4 pt-0">
         <p className="line-clamp-2 text-sm text-muted-foreground">
-          {description}
+          {product.description}
         </p>
         <div className="mt-2 flex items-center justify-between">
           <span className="font-medium">{formattedPrice}</span>
           <span
-            className={`text-sm ${
-              stock > 10
+            className={`text-sm ${product.stock > 10
                 ? "text-green-500"
-                : stock > 0
-                ? "text-amber-500"
-                : "text-red-500"
-            }`}
+                : product.stock > 0
+                  ? "text-amber-500"
+                  : "text-red-500"
+              }`}
           >
-            {stock > 0 ? `${stock} in stock` : "Out of stock"}
+            {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
           </span>
         </div>
       </CardContent>
@@ -73,7 +59,7 @@ export function ProductCard({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onEdit?.(id)}
+          onClick={() => { }}
           className="flex items-center gap-1"
         >
           <Edit className="h-3.5 w-3.5" />
@@ -82,7 +68,7 @@ export function ProductCard({
         <Button
           variant="outline"
           size="sm"
-          onClick={() => onDelete?.(id)}
+          onClick={() => { }}
           className="flex items-center gap-1 text-destructive hover:bg-destructive hover:text-destructive-foreground"
         >
           <Trash2 className="h-3.5 w-3.5" />
@@ -92,4 +78,3 @@ export function ProductCard({
     </Card>
   );
 }
-
