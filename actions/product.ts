@@ -38,6 +38,64 @@ export async function getProducts() {
   }
 }
 
+// Function to get sales data for all products
+export async function getSalesData() {
+  try {
+    const user = await getSession();
+
+    if (!user) {
+      return { error: "You must be logged in to view sales data." };
+    }
+
+    // Get all products for the organization
+    const products = await prisma.product.findMany({
+      where: {
+        organizationId: user.orgId,
+      },
+      select: {
+        id: true,
+        name: true,
+        sellingPrice: true,
+        costPrice: true,
+        totalSold: true,
+      },
+    });
+
+    // Calculate total sales metrics
+    const totalRevenue = products.reduce((sum, product) => 
+      sum + (product.sellingPrice * product.totalSold), 0);
+    
+    const totalCost = products.reduce((sum, product) => 
+      sum + (product.costPrice * product.totalSold), 0);
+    
+    const totalProfit = totalRevenue - totalCost;
+    
+    const totalUnitsSold = products.reduce((sum, product) => 
+      sum + product.totalSold, 0);
+    
+    // Calculate percentage change (mock data for now)
+    const previousMonthRevenue = totalRevenue * 0.8; // Assuming 20% less last month
+    const percentageChange = ((totalRevenue - previousMonthRevenue) / previousMonthRevenue) * 100;
+
+    return { 
+      salesData: {
+        totalRevenue,
+        totalCost,
+        totalProfit,
+        totalUnitsSold,
+        percentageChange,
+        productCount: products.length,
+      } 
+    };
+  } catch (error) {
+    const errorMessage = error instanceof Error
+      ? error.message
+      : "Unknown error";
+    console.error("Error fetching sales data:", errorMessage);
+    return { error: "Failed to fetch sales data. Please try again." };
+  }
+}
+
 // Function to fetch a single product by ID
 export async function getProductById(productId: string) {
   try {
