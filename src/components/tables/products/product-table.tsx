@@ -1,4 +1,5 @@
-import { columns, Product } from "./columns";
+import { Product } from "@prisma/client";
+import { columns } from "./columns";
 import { DataTable } from "@/components/tables/products/data-table";
 
 export default async function ProductTablePage({ data }: { data: Product[] }) {

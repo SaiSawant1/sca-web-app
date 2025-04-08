@@ -73,9 +73,10 @@ export function DataTable<TData, TValue>(
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Filter products..."
-            value={(table.getColumn("product")?.getFilterValue() as string) ?? ""}
+            value={(table.getColumn("name")?.getFilterValue() as string) ??
+              ""}
             onChange={(event) =>
-              table.getColumn("product")?.setFilterValue(event.target.value)}
+              table.getColumn("name")?.setFilterValue(event.target.value)}
             className="pl-8 w-full sm:w-[300px] h-9"
           />
         </div>

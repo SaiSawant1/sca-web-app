@@ -3,18 +3,16 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, Package, DollarSign, TrendingUp, Box, MoreHorizontal } from "lucide-react";
+import {
+  ArrowUpDown,
+  Box,
+  DollarSign,
+  Package,
+  TrendingUp,
+} from "lucide-react";
 import { ActionDropdown } from "./action-dropdown";
 import { Badge } from "@/components/ui/badge";
-
-export type Product = {
-  id: string;
-  product: string;
-  costPrice: number;
-  sellingPrice: number;
-  totalSold: number;
-  stock: number;
-};
+import { Product } from "@prisma/client";
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -63,7 +61,7 @@ export const columns: ColumnDef<Product>[] = [
     },
   },
   {
-    accessorKey: "product",
+    accessorKey: "name",
     header: ({ column }) => {
       return (
         <Button
@@ -79,7 +77,7 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => {
       return (
         <div className="font-medium">
-          {row.getValue("product")}
+          {row.getValue("name")}
         </div>
       );
     },
@@ -177,12 +175,12 @@ export const columns: ColumnDef<Product>[] = [
       const value = row.getValue("stock") as number;
       return (
         <div className="text-center">
-          <Badge 
-            variant={
-              value > 50 ? "default" : 
-              value > 20 ? "secondary" : 
-              "destructive"
-            }
+          <Badge
+            variant={value > 50
+              ? "default"
+              : value > 20
+                ? "secondary"
+                : "destructive"}
           >
             {value}
           </Badge>
