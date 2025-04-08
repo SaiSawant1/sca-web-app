@@ -26,36 +26,64 @@ model Organization {
   updatedAt     DateTime  @updatedAt
 }
 
+enum ProductCategory {
+  Beverages
+  Electronics
+  GeneralRF
+  GeneralGB
+  Grocery
+  RawMaterials
+}
+
+enum Region {
+  North
+  South
+  East
+  West
+}
+
+enum Season {
+  Monsoon
+  Winter
+  Summer
+}
+
 model Product {
-  id              String       @id @default(cuid())
-  name            String
-  description     String?      @db.Text
-  sku             String?      @unique
-  barcode         String?      @unique
-  category        String?
-  brand           String?
-  totalSold       Int          @default(0)
-  stock           Int          @default(0)
-  reorderPoint    Int          @default(10)
-  supplierAddress String
-  supplierName    String?
-  supplierContact String?
-  sellingPrice    Float
-  costPrice       Float
-  taxRate         Float        @default(0)
-  weight          Float? // in grams
-  dimensions      String? // format: "LxWxH" in cm
-  isActive        Boolean      @default(true)
-  isFeatured      Boolean      @default(false)
-  image           String // URLs to product images
-  tags            String[] // For search and filtering
-  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  organizationId  String
-  sales           Sale[] // One-to-many relationship with Sale
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
-  lastRestockedAt DateTime?
-  expiryDate      DateTime? // For perishable items
+  id                  String          @id @default(cuid())
+  name                String
+  description         String?         @db.Text
+  category            ProductCategory
+  subCategory         String?
+  season              Season
+  region              Region
+  warehouseId         Int
+  leadtime            Int
+  supplierReliability Float
+  transportCost       Float
+  promotion           Float
+  brand               String?
+  totalSold           Int             @default(0)
+  stock               Int             @default(0)
+  reorderPoint        Int             @default(10)
+  supplierAddress     String
+  supplierName        String?
+  supplierContact     String?
+  sellingPrice        Float
+  costPrice           Float
+  taxRate             Float           @default(0)
+  weight              Float? // in grams
+  dimensions          String? // format: "LxWxH" in cm
+  isActive            Boolean         @default(true)
+  isFeatured          Boolean         @default(false)
+  image               String // URLs to product images
+  tags                String[] // For search and filtering
+  organization        Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationId      String
+  sales               Sale[] // One-to-many relationship with Sale
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  lastRestockedAt     DateTime?
+  expiryDate          DateTime? // For perishable items
 
   @@index([organizationId])
   @@index([category])
