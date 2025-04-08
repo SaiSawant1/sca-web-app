@@ -22,6 +22,8 @@ import {
   ShoppingCart,
   Truck,
   Loader2,
+  DollarSign,
+  TrendingUp,
 } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -79,7 +81,7 @@ export default function ProductPage({ params }: ProductPageProps) {
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
-    if (!isNaN(value) && value > 0) {
+    if (!isNaN(value) && value > 0 && product && value <= product.stock) {
       setQuantity(value);
     }
   };
@@ -151,6 +153,7 @@ export default function ProductPage({ params }: ProductPageProps) {
   }
 
   const totalPrice = product.sellingPrice * quantity;
+  const profitMargin = ((product.sellingPrice - product.costPrice) / product.sellingPrice) * 100;
 
   return (
     <div className="container mx-auto py-8">
@@ -257,6 +260,24 @@ export default function ProductPage({ params }: ProductPageProps) {
                 </div>
               </div>
             </CardFooter>
+          </Card>
+
+          <Card className="bg-gray-900 border-gray-800">
+            <CardHeader>
+              <h2 className="text-xl font-semibold text-gray-100">Purchase</h2>
+            </CardHeader>
+            <CardContent>
+              <div className="mt-4 grid grid-cols-2 gap-4">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-gray-400" />
+                  <span className="text-gray-400">Cost: {formatCurrency(product.costPrice)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-gray-400" />
+                  <span className="text-gray-400">Margin: {profitMargin.toFixed(1)}%</span>
+                </div>
+              </div>
+            </CardContent>
           </Card>
         </div>
       </div>
