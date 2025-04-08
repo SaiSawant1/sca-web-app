@@ -49,7 +49,7 @@ async function main() {
       isActive: true,
       isFeatured: true,
       image:
-        "https://unsplash.com/photos/flatlay-photography-of-wireless-headphones-PDX_a_82obo",
+        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80",
       organizationId: orgId,
     },
     {
@@ -78,7 +78,7 @@ async function main() {
       isActive: true,
       isFeatured: false,
       image:
-        "https://unsplash.com/photos/brown-coffee-beans-in-clear-glass-jar-5U_28ojjgms",
+        "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80",
       organizationId: orgId,
     },
     {
@@ -107,7 +107,7 @@ async function main() {
       isActive: true,
       isFeatured: true,
       image:
-        "https://unsplash.com/photos/person-wearing-black-smartwatch-8qEB0fTe9Vw",
+        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80",
       organizationId: orgId,
     },
     {
@@ -136,7 +136,7 @@ async function main() {
       isActive: true,
       isFeatured: false,
       image:
-        "https://unsplash.com/photos/white-rice-in-clear-glass-container-8Nc_oIPsc1Q",
+        "https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&w=800&q=80",
       organizationId: orgId,
     },
     {
@@ -164,7 +164,8 @@ async function main() {
       dimensions: "50x30x20",
       isActive: true,
       isFeatured: false,
-      image: "https://unsplash.com/photos/white-cotton-fabric-8Nc_oIPsc1Q",
+      image:
+        "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=800&q=80",
       organizationId: orgId,
     },
     // 5 additional products
@@ -193,7 +194,8 @@ async function main() {
       dimensions: "35x25x2",
       isActive: true,
       isFeatured: true,
-      image: "https://unsplash.com/photos/silver-macbook-pro-on-table-4hbJ-eymZ1o",
+      image:
+        "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=800&q=80",
       organizationId: orgId,
     },
     {
@@ -221,7 +223,8 @@ async function main() {
       dimensions: "15x10x5",
       isActive: true,
       isFeatured: false,
-      image: "https://unsplash.com/photos/green-tea-leaves-in-clear-glass-container-8Nc_oIPsc1Q",
+      image:
+        "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
       organizationId: orgId,
     },
     {
@@ -249,7 +252,8 @@ async function main() {
       dimensions: "200x10x10",
       isActive: true,
       isFeatured: false,
-      image: "https://unsplash.com/photos/metal-pipes-8Nc_oIPsc1Q",
+      image:
+        "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=800&q=80",
       organizationId: orgId,
     },
     {
@@ -277,7 +281,8 @@ async function main() {
       dimensions: "10x10x15",
       isActive: true,
       isFeatured: true,
-      image: "https://unsplash.com/photos/honey-in-glass-jar-8Nc_oIPsc1Q",
+      image:
+        "https://images.unsplash.com/photo-1581093458791-9f3c3250a8b7?auto=format&fit=crop&w=800&q=80",
       organizationId: orgId,
     },
     {
@@ -305,7 +310,8 @@ async function main() {
       dimensions: "5x3x1",
       isActive: true,
       isFeatured: false,
-      image: "https://unsplash.com/photos/electronic-circuit-board-8Nc_oIPsc1Q",
+      image:
+        "https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=800&q=80",
       organizationId: orgId,
     },
   ];
