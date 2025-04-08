@@ -26,11 +26,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Box, Calendar, DollarSign, Package } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { CreateProductAction } from "@/actions/product";
 import * as z from "zod";
 import { useAction } from "@/hooks/use-action";
 import { ProductFormSchema } from "./product-form-schema";
 import { toast } from "sonner";
+import { CreateProductAction } from "../../../../actions/product";
 
 export function ProductForm() {
   const [error, setError] = useState("");
@@ -107,7 +107,7 @@ export function ProductForm() {
                           <Input placeholder="Enter product name" {...field} />
                         </FormControl>
                         <FormDescription>
-                          This is your product's display name.
+                          This is your product&apos;s display name.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>

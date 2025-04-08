@@ -5,14 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Plus, 
-  Search, 
-  Package, 
-  Filter, 
-  SlidersHorizontal,
-  ChevronDown
-} from "lucide-react";
+import { Filter, Package, Plus, Search } from "lucide-react";
 import { ProductsGrid } from "@/components/products/products-grid";
 import {
   DropdownMenu,
@@ -20,8 +13,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 
 export default function ProductsPage() {
+  const router = useRouter();
+
   return (
     <div className="container mx-auto py-8 px-4 md:px-6">
       <div className="flex flex-col gap-6">
@@ -34,7 +30,8 @@ export default function ProductsPage() {
             </h1>
           </div>
           <p className="text-muted-foreground max-w-2xl">
-            Manage your product catalog, track inventory levels, and update product details all in one place.
+            Manage your product catalog, track inventory levels, and update
+            product details all in one place.
           </p>
         </div>
 
@@ -78,7 +75,10 @@ export default function ProductsPage() {
             <Badge variant="outline" className="font-normal">
               124 Products
             </Badge>
-            <Button className="flex items-center gap-2 bg-primary hover:bg-primary/90">
+            <Button 
+              className="flex items-center gap-2 bg-primary hover:bg-primary/90"
+              onClick={() => router.push("/inventory/products/new")}
+            >
               <Plus className="h-4 w-4" />
               Add Product
             </Button>
