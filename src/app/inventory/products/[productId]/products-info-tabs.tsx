@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { SparklesCore } from "@/components/ui/sparkles";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Product } from "@prisma/client";
-import { Truck, Users, Package, BarChart3, FileText } from "lucide-react";
+import { Truck, Users, Package, BarChart3, FileText, DollarSign, TrendingUp, ShoppingCart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProductsInfoTabsProps {
@@ -21,6 +21,20 @@ export const ProductsInfoTabs = ({ product }: ProductsInfoTabsProps) => {
     : product.stock > 0
       ? { text: "Low Stock", variant: "secondary" as const }
       : { text: "Out of Stock", variant: "destructive" as const };
+
+  // Calculate total sales and profit
+  const totalSales = product.totalSold * product.sellingPrice;
+  const totalProfit = product.totalSold * (product.sellingPrice - product.costPrice);
+  
+  // Format currency values
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  };
 
   return (
     <Tabs
@@ -91,6 +105,44 @@ export const ProductsInfoTabs = ({ product }: ProductsInfoTabsProps) => {
                     </Badge>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <Separator className="my-4" />
+            
+            <div>
+              <h3 className="text-lg font-medium mb-3">Sales Summary</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Card className="bg-muted/30">
+                  <CardContent className="p-4 flex flex-col items-center">
+                    <div className="flex items-center gap-2 mb-2">
+                      <DollarSign className="h-5 w-5 text-primary" />
+                      <h4 className="font-medium">Total Sales</h4>
+                    </div>
+                    <p className="text-2xl font-bold">{formatCurrency(totalSales)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Revenue from all sales</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-muted/30">
+                  <CardContent className="p-4 flex flex-col items-center">
+                    <div className="flex items-center gap-2 mb-2">
+                      <TrendingUp className="h-5 w-5 text-green-500" />
+                      <h4 className="font-medium">Total Profit</h4>
+                    </div>
+                    <p className="text-2xl font-bold text-green-500">{formatCurrency(totalProfit)}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Net profit from all sales</p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-muted/30">
+                  <CardContent className="p-4 flex flex-col items-center">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ShoppingCart className="h-5 w-5 text-blue-500" />
+                      <h4 className="font-medium">Units Sold</h4>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-500">{product.totalSold}</p>
+                    <p className="text-xs text-muted-foreground mt-1">Total quantity sold</p>
+                  </CardContent>
+                </Card>
               </div>
             </div>
 
