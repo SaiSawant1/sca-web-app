@@ -53,7 +53,7 @@ model Product {
   name                String
   description         String?         @db.Text
   category            ProductCategory
-  subCategory         String?
+  subCategory         String
   season              Season
   region              Region
   warehouseId         Int
@@ -76,7 +76,6 @@ model Product {
   isActive            Boolean         @default(true)
   isFeatured          Boolean         @default(false)
   image               String // URLs to product images
-  tags                String[] // For search and filtering
   organization        Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId      String
   sales               Sale[] // One-to-many relationship with Sale

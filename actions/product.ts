@@ -12,6 +12,12 @@ export type ProductReturnType = ActionState<ProductInputType, Product>;
 
 async function handler(input: ProductInputType): Promise<ProductReturnType> {
   try {
+    // Ensure input is an object
+    if (!input || typeof input !== "object" || Array.isArray(input)) {
+      return { error: "Invalid input data format" };
+    }
+    console.log("input", input);
+
     // Get the current user's organization ID
     const user = await getSession();
 
@@ -30,9 +36,15 @@ async function handler(input: ProductInputType): Promise<ProductReturnType> {
       data: {
         name: input.name,
         description: input.description || "",
-        sku: input.sku || null,
-        barcode: input.barcode || null,
-        category: input.category || null,
+        category: input.category,
+        season: input.season,
+        region: input.region,
+        warehouseId: input.warehouseId,
+        subCategory: input.subCategory,
+        leadtime: input.leadtime,
+        supplierReliability: input.supplierReliability,
+        transportCost: input.transportCost,
+        promotion: input.promotion,
         brand: input.brand || null,
         stock: input.stock,
         reorderPoint: input.reorderPoint,
@@ -47,7 +59,6 @@ async function handler(input: ProductInputType): Promise<ProductReturnType> {
         isActive: input.isActive,
         isFeatured: input.isFeatured,
         image: input.image || "",
-        tags: input.tags || [],
         expiryDate: expiryDate,
         organizationId: user.orgId,
       },
@@ -55,7 +66,11 @@ async function handler(input: ProductInputType): Promise<ProductReturnType> {
 
     return { data: product };
   } catch (error) {
-    console.error("Error creating product:", error);
+    // Safely handle error logging
+    const errorMessage = error instanceof Error
+      ? error.message
+      : "Unknown error";
+    console.log(errorMessage);
     return { error: "Failed to create product. Please try again." };
   }
 }
