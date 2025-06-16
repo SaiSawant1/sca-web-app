@@ -1,11 +1,11 @@
+"use client";
 import { DashboardView } from "@/components/dashboard-view";
 import { DatePickerRange } from "@/components/date-range-picker";
 import { Button } from "@/components/ui/button";
+import { useSearchParams } from "next/navigation";
 
-export default async function InventoryPage(
-  { searchParams }: { searchParams: { view: string } },
-) {
-  const view = (await searchParams).view || "Overview";
+export default function InventoryPage() {
+  const view = useSearchParams().get("view") || "Overview";
   return (
     <div className="px-10 py-4">
       <div className="flex justify-between items-center">

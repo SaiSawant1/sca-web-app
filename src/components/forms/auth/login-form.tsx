@@ -105,7 +105,7 @@ export const LoginForm = () => {
         <div className="flex flex-col gap-4">
           <Button type="submit">Submit</Button>
           <p className="text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/signup" className="text-primary hover:underline">
               Sign up
             </Link>

@@ -1,5 +1,5 @@
 import { BarChartView } from "./bar-chart";
-import { Notifications } from "./notifications";
+import Notifications from "./notifications";
 
 export const Overview = () => {
   return (

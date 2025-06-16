@@ -62,22 +62,29 @@ export async function getSalesData() {
     });
 
     // Calculate total sales metrics
-    const totalRevenue = products.reduce((sum, product) => 
-      sum + (product.sellingPrice * product.totalSold), 0);
-    
-    const totalCost = products.reduce((sum, product) => 
-      sum + (product.costPrice * product.totalSold), 0);
-    
+    const totalRevenue = products.reduce(
+      (sum, product) => sum + (product.sellingPrice * product.totalSold),
+      0,
+    );
+
+    const totalCost = products.reduce(
+      (sum, product) => sum + (product.costPrice * product.totalSold),
+      0,
+    );
+
     const totalProfit = totalRevenue - totalCost;
-    
-    const totalUnitsSold = products.reduce((sum, product) => 
-      sum + product.totalSold, 0);
-    
+
+    const totalUnitsSold = products.reduce(
+      (sum, product) => sum + product.totalSold,
+      0,
+    );
+
     // Calculate percentage change (mock data for now)
     const previousMonthRevenue = totalRevenue * 0.8; // Assuming 20% less last month
-    const percentageChange = ((totalRevenue - previousMonthRevenue) / previousMonthRevenue) * 100;
+    const percentageChange =
+      ((totalRevenue - previousMonthRevenue) / previousMonthRevenue) * 100;
 
-    return { 
+    return {
       salesData: {
         totalRevenue,
         totalCost,
@@ -85,7 +92,7 @@ export async function getSalesData() {
         totalUnitsSold,
         percentageChange,
         productCount: products.length,
-      } 
+      },
     };
   } catch (error) {
     const errorMessage = error instanceof Error
@@ -108,7 +115,9 @@ export async function getProductById(productId: string) {
     const product = await prisma.product.findUnique({
       where: {
         id: productId,
-        organizationId: user.orgId,
+      },
+      include: {
+        organization: true,
       },
     });
 

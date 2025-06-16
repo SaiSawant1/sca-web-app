@@ -18,3 +18,15 @@ export const UserSessionSchema = z.object({
 });
 
 export type UserSessionType = z.infer<typeof UserSessionSchema>;
+
+import { Prisma } from "@prisma/client";
+
+export const productWithOrg = Prisma.validator<Prisma.ProductDefaultArgs>()({
+  include: {
+    organization: true,
+  },
+});
+
+export type ProductWithOrganization = Prisma.ProductGetPayload<
+  typeof productWithOrg
+>;

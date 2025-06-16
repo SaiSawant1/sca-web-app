@@ -8,15 +8,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
-  DollarSign,
-  Users,
-  TrendingUp,
   Activity,
-  ArrowUpRight,
   ArrowDownRight,
+  ArrowUpRight,
+  DollarSign,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 
 interface SectionCardProps {
@@ -56,11 +54,9 @@ const SectionCard = ({
         <div className="flex flex-col gap-1">
           <div className="text-2xl font-bold">{formattedValue}</div>
           <div className="flex items-center gap-1 text-sm">
-            {isPositive ? (
-              <ArrowUpRight className="h-4 w-4 text-primary" />
-            ) : (
-              <ArrowDownRight className="h-4 w-4 text-destructive" />
-            )}
+            {isPositive
+              ? <ArrowUpRight className="h-4 w-4 text-primary" />
+              : <ArrowDownRight className="h-4 w-4 text-destructive" />}
             <span className={isPositive ? "text-primary" : "text-destructive"}>
               {formattedChange}
             </span>

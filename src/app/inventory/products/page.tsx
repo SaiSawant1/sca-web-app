@@ -7,6 +7,7 @@ import { getProducts } from "../../../../actions/product";
 
 export default async function ProductsPage() {
   const { products = [] } = await getProducts();
+  
   return (
     <div className="container mx-auto py-8 px-4 md:px-6">
       <div className="flex flex-col gap-6">

@@ -3,6 +3,14 @@
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
+type Particle = {
+  x: number;
+  y: number;
+  size: number;
+  speedX: number;
+  speedY: number;
+};
+
 export const SparklesCore = ({
   id,
   className,
@@ -23,7 +31,7 @@ export const SparklesCore = ({
   particleSpeed?: number;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particles = useRef<any[]>([]);
+  const particles = useRef<Particle[]>([]);
   const animationFrameId = useRef<number>(1);
 
   useEffect(() => {
@@ -118,4 +126,3 @@ export const SparklesCore = ({
     />
   );
 };
-

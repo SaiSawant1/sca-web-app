@@ -2,43 +2,35 @@
 
 import { useEffect, useState } from "react";
 import { getProductById } from "../../../../actions/product";
-import { requestPurchase } from "../../../../actions/requestPurchase";
-import { useParams, useRouter } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   ArrowLeft,
-  CreditCard,
+  Building2,
   DollarSign,
-  Loader2,
+  Mail,
+  MapPin,
   Package,
-  ShoppingCart,
   TrendingUp,
-  Truck,
 } from "lucide-react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { toast } from "sonner";
-import React from "react";
 import { ProductWithOrganization } from "../../../../types";
 
-export default function ProductPage() {
+export default function ProductDetailsPage() {
   const params = useParams<{ productId: string }>();
   const productId = params.productId;
   const [product, setProduct] = useState<ProductWithOrganization | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [quantity, setQuantity] = useState(1);
-  const [isPurchasing, setIsPurchasing] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const notificationId = searchParams.get("notificationId");
+  const [notificationStatus, setNotificationStatus] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -67,6 +59,15 @@ export default function ProductPage() {
     fetchProduct();
   }, [productId]);
 
+  useEffect(() => {
+    if (notificationId) {
+      // Fetch notification status
+      fetch(`/api/notifications/status?id=${notificationId}`)
+        .then((res) => res.json())
+        .then((data) => setNotificationStatus(data.status));
+    }
+  }, [notificationId]);
+
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -76,40 +77,21 @@ export default function ProductPage() {
     }).format(value);
   };
 
-  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    if (!isNaN(value) && value > 0 && product && value <= product.stock) {
-      setQuantity(value);
+  const handleApprove = async () => {
+    setLoading(true);
+    const res = await fetch("/api/notifications/approve", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ notificationId }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      setNotificationStatus("PROCESSED");
+      // Optionally show a toast
+    } else {
+      alert(data.error || "Failed to approve");
     }
-  };
-
-  const handlePurchase = async () => {
-    if (!product) return;
-
-    try {
-      setIsPurchasing(true);
-
-      const result = await requestPurchase({
-        productId: product.id,
-        quantity,
-      });
-
-      if (result.error) {
-        toast.error(result.error);
-        return;
-      }
-
-      if (result.success) {
-        toast.success(result.message);
-        // No stock update here, since it's just a request!
-        setQuantity(1);
-      }
-    } catch (error) {
-      console.error("Purchase error:", error);
-      toast.error("Failed to process purchase. Please try again.");
-    } finally {
-      setIsPurchasing(false);
-    }
+    setLoading(false);
   };
 
   if (loading) {
@@ -130,7 +112,6 @@ export default function ProductPage() {
             <div className="h-4 bg-gray-700 rounded w-1/2"></div>
             <div className="h-24 bg-gray-700 rounded"></div>
             <div className="h-10 bg-gray-700 rounded w-1/3"></div>
-            <div className="h-10 bg-gray-700 rounded w-full"></div>
           </div>
         </div>
       </div>
@@ -147,7 +128,6 @@ export default function ProductPage() {
     );
   }
 
-  const totalPrice = product.sellingPrice * quantity;
   const profitMargin =
     ((product.sellingPrice - product.costPrice) / product.sellingPrice) * 100;
 
@@ -161,6 +141,7 @@ export default function ProductPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Product Image */}
         <div className="relative h-96 w-full">
           {product.image
             ? (
@@ -181,6 +162,7 @@ export default function ProductPage() {
           )}
         </div>
 
+        {/* Product Details */}
         <div className="space-y-6">
           <div>
             <h1 className="text-3xl font-bold">{product.name}</h1>
@@ -191,113 +173,55 @@ export default function ProductPage() {
             <p className="text-gray-700">{product.description}</p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Package className="h-5 w-5 text-gray-500" />
-            <span>In Stock: {product.stock} units</span>
-          </div>
-
-          <div className="text-2xl font-bold">
-            {formatCurrency(product.sellingPrice)}
-          </div>
-
           <Card>
             <CardHeader>
-              <h2 className="text-xl font-semibold">Purchase Options</h2>
+              <CardTitle>Product Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="quantity">Quantity</Label>
-                <Input
-                  id="quantity"
-                  type="number"
-                  min="1"
-                  max={product.stock}
-                  value={quantity}
-                  onChange={handleQuantityChange}
-                  disabled={isPurchasing}
-                />
-              </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-lg">Total:</span>
-                <span className="text-2xl font-bold">
-                  {formatCurrency(totalPrice)}
-                </span>
-              </div>
-            </CardContent>
-            <CardFooter className="flex flex-col gap-4">
-              <Button
-                className="w-full"
-                size="lg"
-                onClick={handlePurchase}
-                disabled={isPurchasing || product.stock < 1}
-              >
-                {isPurchasing
-                  ? (
-                    <>
-                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  )
-                  : (
-                    <>
-                      <ShoppingCart className="h-5 w-5 mr-2" />
-                      Purchase Now
-                    </>
-                  )}
-              </Button>
-
-              <div className="flex items-center justify-center gap-4 text-sm text-gray-500">
-                <div className="flex items-center">
-                  <Truck className="h-4 w-4 mr-1" />
-                  <span>Free Shipping</span>
-                </div>
-                <div className="flex items-center">
-                  <CreditCard className="h-4 w-4 mr-1" />
-                  <span>Secure Payment</span>
-                </div>
-              </div>
-            </CardFooter>
-          </Card>
-
-          <Card className="bg-gray-900 border-gray-800">
-            <CardHeader>
-              <h2 className="text-xl font-semibold text-gray-100">Purchase</h2>
-            </CardHeader>
-            <CardContent>
-              <div className="mt-4 grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-400">
-                    Cost: {formatCurrency(product.costPrice)}
-                  </span>
+                  <Package className="h-4 w-4 text-gray-500" />
+                  <span>Stock: {product.stock} units</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-400">
-                    Margin: {profitMargin.toFixed(1)}%
-                  </span>
+                  <DollarSign className="h-4 w-4 text-gray-500" />
+                  <span>Price: {formatCurrency(product.sellingPrice)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-gray-500" />
+                  <span>Margin: {profitMargin.toFixed(1)}%</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Package className="h-4 w-4 text-gray-500" />
+                  <span>Total Sold: {product.totalSold}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {product && product.organization && (
-            <Card className="mb-4">
+          {/* Seller Information */}
+          {product.organization && (
+            <Card>
               <CardHeader>
-                <h2 className="text-lg font-semibold">Seller Information</h2>
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="h-5 w-5" />
+                  Seller Information
+                </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <div>
+                  <div className="flex items-center gap-2">
+                    <Building2 className="h-4 w-4 text-gray-500" />
                     <span className="font-medium">Name:</span>
                     {product.organization.name || "N/A"}
                   </div>
-                  <div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-4 w-4 text-gray-500" />
                     <span className="font-medium">Email:</span>
                     {product.organization.email}
                   </div>
-                  <div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-gray-500" />
                     <span className="font-medium">Address:</span>
                     {product.organization.address || "N/A"}
                   </div>
@@ -305,8 +229,55 @@ export default function ProductPage() {
               </CardContent>
             </Card>
           )}
+
+          {/* Additional Product Details */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Additional Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <span className="font-medium">Category:</span>
+                  {product.category}
+                </div>
+                <div>
+                  <span className="font-medium">Subcategory:</span>
+                  {product.subCategory}
+                </div>
+                <div>
+                  <span className="font-medium">Season:</span>
+                  {product.season}
+                </div>
+                <div>
+                  <span className="font-medium">Region:</span>
+                  {product.region}
+                </div>
+                <div>
+                  <span className="font-medium">Brand:</span>
+                  {product.brand || "N/A"}
+                </div>
+                <div>
+                  <span className="font-medium">Warehouse ID:</span>
+                  {product.warehouseId}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
+      {notificationId && notificationStatus === "PENDING" && (
+        <div className="flex gap-2 mt-4">
+          <button
+            className="px-4 py-2 bg-green-600 text-white rounded"
+            onClick={handleApprove}
+            disabled={loading}
+          >
+            {loading ? "Approving..." : "Approve"}
+          </button>
+          {/* Add Reject button if you implement reject logic */}
+        </div>
+      )}
     </div>
   );
 }

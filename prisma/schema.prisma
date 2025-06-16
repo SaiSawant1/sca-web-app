@@ -24,6 +24,10 @@ model Organization {
   sales         Sale[] // One-to-many relationship with Sale
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+
+  // Notification relations
+  notificationsReceived Notification[] @relation("ToOrg")
+  notificationsSent     Notification[] @relation("FromOrg")
 }
 
 enum ProductCategory {
@@ -83,6 +87,7 @@ model Product {
   updatedAt           DateTime        @updatedAt
   lastRestockedAt     DateTime?
   expiryDate          DateTime? // For perishable items
+  notifications       Notification[]
 
   @@index([organizationId])
   @@index([category])
@@ -138,4 +143,24 @@ enum PeriodType {
   MONTH
   QUARTER
   YEAR
+}
+
+model Notification {
+  id           String   @id @default(cuid())
+  toOrgId      String
+  fromOrgId    String
+  productId    String
+  quantity     Int
+  status       NotificationStatus @default(PENDING)
+  createdAt    DateTime @default(now())
+  processedAt  DateTime?
+  // Relations
+  toOrg        Organization @relation("ToOrg", fields: [toOrgId], references: [id])
+  fromOrg      Organization @relation("FromOrg", fields: [fromOrgId], references: [id])
+  product      Product      @relation(fields: [productId], references: [id])
+}
+
+enum NotificationStatus {
+  PENDING
+  PROCESSED
 }

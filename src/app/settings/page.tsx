@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -31,6 +31,7 @@ import {
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { getCurrentUser } from "../../../actions/getCurrentUser";
 
 // Dummy user data
 const userData = {
@@ -65,6 +66,22 @@ export default function SettingsPage() {
     address: user.address,
     phone: user.phone,
   });
+
+  useEffect(() => {
+    async function fetchUser() {
+      const dbUser = await getCurrentUser();
+      if (dbUser) {
+        setUser((prev) => ({
+          ...prev,
+          ...dbUser,
+          avatar: userData.avatar, // always use dummy avatar
+          name: dbUser.name ?? "",
+          address: dbUser.address ?? "",
+        }));
+      }
+    }
+    fetchUser();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -109,7 +126,7 @@ export default function SettingsPage() {
               Manage your account settings and preferences
             </p>
           </div>
-          <Link href="/inventory/products">
+          <Link href="/inventory">
             <Button variant="outline" className="flex items-center gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back to Inventory
@@ -118,32 +135,41 @@ export default function SettingsPage() {
         </div>
 
         <Tabs defaultValue="profile" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-[400px]">
-            <TabsTrigger value="profile" className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              <span>Profile</span>
+          <TabsList className="flex w-full border-b border-muted-foreground/20 bg-background">
+            <TabsTrigger
+              value="profile"
+              className="flex-1 py-3 px-4 text-center font-medium transition-colors border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary"
+            >
+              <User className="h-4 w-4 inline-block mr-2" />
+              Profile
             </TabsTrigger>
-            <TabsTrigger value="appearance" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              <span>Appearance</span>
+            <TabsTrigger
+              value="appearance"
+              className="flex-1 py-3 px-4 text-center font-medium transition-colors border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary"
+            >
+              <Settings className="h-4 w-4 inline-block mr-2" />
+              Appearance
             </TabsTrigger>
             <TabsTrigger
               value="notifications"
-              className="flex items-center gap-2"
+              className="flex-1 py-3 px-4 text-center font-medium transition-colors border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary"
             >
-              <Bell className="h-4 w-4" />
-              <span>Notifications</span>
+              <Bell className="h-4 w-4 inline-block mr-2" />
+              Notifications
             </TabsTrigger>
-            <TabsTrigger value="security" className="flex items-center gap-2">
-              <Shield className="h-4 w-4" />
-              <span>Security</span>
+            <TabsTrigger
+              value="security"
+              className="flex-1 py-3 px-4 text-center font-medium transition-colors border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary"
+            >
+              <Shield className="h-4 w-4 inline-block mr-2" />
+              Security
             </TabsTrigger>
             <TabsTrigger
               value="preferences"
-              className="flex items-center gap-2"
+              className="flex-1 py-3 px-4 text-center font-medium transition-colors border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-primary"
             >
-              <Globe className="h-4 w-4" />
-              <span>Preferences</span>
+              <Globe className="h-4 w-4 inline-block mr-2" />
+              Preferences
             </TabsTrigger>
           </TabsList>
 

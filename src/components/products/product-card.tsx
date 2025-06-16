@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2, ShoppingCart } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { Product } from "@prisma/client";
 import { useRouter } from "next/navigation";
@@ -22,7 +22,7 @@ export function ProductCard({
   product,
 }: ProductCardProps) {
   const router = useRouter();
-  
+
   const formattedPrice = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
@@ -39,9 +39,9 @@ export function ProductCard({
     console.log("Delete product:", product.id);
   };
 
-  const stockStatus = product.stock > 10 
+  const stockStatus = product.stock > 10
     ? { text: "In Stock", color: "text-green-500" }
-    : product.stock > 0 
+    : product.stock > 0
       ? { text: "Low Stock", color: "text-amber-500" }
       : { text: "Out of Stock", color: "text-red-500" };
 
@@ -59,8 +59,8 @@ export function ProductCard({
           className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
         />
         {product.isFeatured && (
-          <Badge 
-            variant="secondary" 
+          <Badge
+            variant="secondary"
             className="absolute top-2 right-2 bg-primary/90 text-primary-foreground hover:bg-primary/90"
           >
             Featured
@@ -70,7 +70,9 @@ export function ProductCard({
       </div>
       <CardHeader className="p-4">
         <div className="flex items-start justify-between">
-          <CardTitle className="line-clamp-1 text-lg font-semibold">{product.name}</CardTitle>
+          <CardTitle className="line-clamp-1 text-lg font-semibold">
+            {product.name}
+          </CardTitle>
         </div>
       </CardHeader>
       <CardContent className="p-4 pt-0">
@@ -78,7 +80,9 @@ export function ProductCard({
           {product.description || "No description available"}
         </p>
         <div className="flex items-center justify-between mb-3">
-          <span className="text-lg font-bold text-primary">{formattedPrice}</span>
+          <span className="text-lg font-bold text-primary">
+            {formattedPrice}
+          </span>
           <span className={cn("text-sm font-medium", stockStatus.color)}>
             {stockStatus.text}
           </span>

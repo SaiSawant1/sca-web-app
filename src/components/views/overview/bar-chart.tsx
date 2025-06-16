@@ -1,14 +1,19 @@
 "use client";
 
-import { TrendingUp, ArrowUpRight, ArrowDownRight, DollarSign } from "lucide-react";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  DollarSign,
+  TrendingUp,
+} from "lucide-react";
 import {
   Bar,
   BarChart,
   CartesianGrid,
   LabelList,
+  ResponsiveContainer,
   XAxis,
   YAxis,
-  ResponsiveContainer,
 } from "recharts";
 
 import {
@@ -26,17 +31,18 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
+import { useAction } from "@/hooks/use-action";
 
-const chartData = [
-  { month: "January", sale: 186, previousYear: 165 },
-  { month: "February", sale: 305, previousYear: 285 },
-  { month: "March", sale: 237, previousYear: 255 },
-  { month: "April", sale: 173, previousYear: 150 },
-  { month: "May", sale: 209, previousYear: 190 },
-  { month: "June", sale: 214, previousYear: 195 },
-];
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { GetSalesOverviewAction } from "../../../../actions/get-sales-overview";
 
 const chartConfig = {
   sale: {
@@ -49,11 +55,56 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+type ChartDataItem = {
+  month: string;
+  sale: number;
+  previousYear: number;
+};
+
+type SalesData = {
+  currentYear: { month: string; sale: number }[];
+  previousYear: { month: string; sale: number }[];
+};
+
 export function BarChartView() {
+  const [chartData, setChartData] = useState<ChartDataItem[]>([]);
+  const { execute } = useAction(GetSalesOverviewAction, {
+    onSuccess: (data: unknown) => {
+      const salesData = data as SalesData;
+      if (salesData?.currentYear && salesData?.previousYear) {
+        const formattedData = salesData.currentYear.map((item, index) => ({
+          month: item.month,
+          sale: item.sale,
+          previousYear: salesData.previousYear[index].sale,
+        }));
+        setChartData(formattedData);
+      }
+    },
+    onError: (error) => {
+      toast.error(`Failed to load sales data: ${error}`);
+    },
+  });
+
+  useEffect(() => {
+    execute({});
+  }, []);
+
   const currentTotal = chartData.reduce((acc, curr) => acc + curr.sale, 0);
-  const previousTotal = chartData.reduce((acc, curr) => acc + curr.previousYear, 0);
-  const percentageChange = ((currentTotal - previousTotal) / previousTotal) * 100;
+  const previousTotal = chartData.reduce(
+    (acc, curr) => acc + curr.previousYear,
+    0,
+  );
+  const percentageChange = previousTotal
+    ? ((currentTotal - previousTotal) / previousTotal) * 100
+    : 0;
   const isPositive = percentageChange > 0;
+
+  const currentMonthIndex = new Date().getMonth();
+  const currentMonthSale = chartData.find(
+    (item) =>
+      new Date(item.month + " 1, " + new Date().getFullYear()).getMonth() ===
+      currentMonthIndex,
+  )?.sale || 0;
 
   return (
     <Card className="flex-1 transition-all duration-300 hover:shadow-lg">
@@ -74,11 +125,13 @@ export function BarChartView() {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Badge 
+              <Badge
                 variant={isPositive ? "default" : "destructive"}
                 className="h-6 px-2 text-xs flex items-center gap-1 transition-all duration-300 hover:scale-105"
               >
-                {isPositive ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                {isPositive
+                  ? <ArrowUpRight className="h-3 w-3" />
+                  : <ArrowDownRight className="h-3 w-3" />}
                 {Math.abs(percentageChange).toFixed(1)}%
               </Badge>
             </TooltipTrigger>
@@ -102,15 +155,15 @@ export function BarChartView() {
                   left: 20,
                 }}
               >
-                <CartesianGrid 
-                  vertical={false} 
-                  stroke="hsl(var(--border))" 
-                  strokeDasharray="4" 
+                <CartesianGrid
+                  vertical={false}
+                  stroke="hsl(var(--border))"
+                  strokeDasharray="4"
                   opacity={0.5}
                 />
-                <YAxis 
-                  dataKey="sale" 
-                  tickLine={false} 
+                <YAxis
+                  dataKey="sale"
+                  tickLine={false}
                   axisLine={false}
                   stroke="hsl(var(--muted-foreground))"
                   fontSize={12}
@@ -129,16 +182,16 @@ export function BarChartView() {
                   cursor={{ fill: "hsl(var(--muted)/0.1)" }}
                   content={<ChartTooltipContent />}
                 />
-                <Bar 
-                  dataKey="previousYear" 
-                  fill="hsl(var(--muted))" 
-                  radius={[4, 4, 0, 0]} 
+                <Bar
+                  dataKey="previousYear"
+                  fill="hsl(var(--muted))"
+                  radius={[4, 4, 0, 0]}
                   maxBarSize={40}
                   animationDuration={1500}
                 />
-                <Bar 
-                  dataKey="sale" 
-                  fill="hsl(var(--primary))" 
+                <Bar
+                  dataKey="sale"
+                  fill="hsl(var(--primary))"
                   radius={[4, 4, 0, 0]}
                   maxBarSize={40}
                   animationDuration={1500}
@@ -149,7 +202,8 @@ export function BarChartView() {
                     offset={8}
                     className="fill-muted-foreground"
                     fontSize={11}
-                    formatter={(value: number) => `$${value}`}
+                    formatter={(value: number) =>
+                      `$${Math.round(value).toLocaleString()}`}
                   />
                 </Bar>
               </BarChart>
@@ -160,10 +214,21 @@ export function BarChartView() {
       <Separator className="my-2" />
       <CardFooter className="flex items-center justify-between pt-4">
         <div className="flex flex-col gap-1">
-          <div className="text-sm font-medium text-muted-foreground">Total Sales</div>
+          <div className="text-sm font-medium text-muted-foreground">
+            Total Sales (Current Year)
+          </div>
           <div className="flex items-center gap-1 text-2xl font-bold">
             <DollarSign className="h-5 w-5 text-primary" />
             {currentTotal.toLocaleString()}
+          </div>
+        </div>
+        <div className="flex flex-col gap-1">
+          <div className="text-sm font-medium text-muted-foreground">
+            This Month&apos;s Sales
+          </div>
+          <div className="flex items-center gap-1 text-2xl font-bold">
+            <DollarSign className="h-5 w-5 text-primary" />
+            {currentMonthSale.toLocaleString()}
           </div>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">

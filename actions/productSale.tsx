@@ -149,6 +149,8 @@ export async function createPurchase(data: PurchaseInput) {
       const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
       monthEnd.setHours(23, 59, 59, 999);
 
+      console.log("Monthly Upsert Data - totalAmount:", totalAmount, "monthStart:", monthStart, "monthEnd:", monthEnd);
+
       await tx.salesAggregate.upsert({
         where: {
           productId_periodType_periodStart: {
@@ -182,6 +184,7 @@ export async function createPurchase(data: PurchaseInput) {
     // Revalidate the product page to show updated stock
     revalidatePath(`/sales/${product.id}`);
     revalidatePath("/sales");
+    revalidatePath("/inventory");
 
     return {
       success: true,

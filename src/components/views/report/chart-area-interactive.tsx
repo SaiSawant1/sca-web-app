@@ -1,16 +1,23 @@
 "use client";
 
 import * as React from "react";
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import { BarChart, Bar, Tooltip as RechartsTooltip } from "recharts";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
+import { Bar, BarChart, Tooltip as RechartsTooltip } from "recharts";
 
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from "@/components/ui/card";
 import {
   ChartConfig,
@@ -28,43 +35,208 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { DollarSign, TrendingUp, Calendar, Package, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import {
+  ArrowDownRight,
+  ArrowUpRight,
+  Calendar,
+  Package,
+  TrendingUp,
+} from "lucide-react";
 
 // Product sales data with actual sales and forecast
 const chartData = [
-  { date: "2024-01-01", actualSales: 12500, forecastSales: 12000, categoryA: 4500, categoryB: 3800, categoryC: 4200 },
-  { date: "2024-01-15", actualSales: 13200, forecastSales: 12800, categoryA: 4800, categoryB: 4000, categoryC: 4400 },
-  { date: "2024-02-01", actualSales: 14100, forecastSales: 13500, categoryA: 5100, categoryB: 4200, categoryC: 4800 },
-  { date: "2024-02-15", actualSales: 14800, forecastSales: 14200, categoryA: 5400, categoryB: 4400, categoryC: 5000 },
-  { date: "2024-03-01", actualSales: 15600, forecastSales: 15000, categoryA: 5700, categoryB: 4600, categoryC: 5300 },
-  { date: "2024-03-15", actualSales: 16300, forecastSales: 15800, categoryA: 6000, categoryB: 4800, categoryC: 5500 },
-  { date: "2024-04-01", actualSales: 17100, forecastSales: 16500, categoryA: 6300, categoryB: 5000, categoryC: 5800 },
-  { date: "2024-04-15", actualSales: 17800, forecastSales: 17200, categoryA: 6600, categoryB: 5200, categoryC: 6000 },
-  { date: "2024-05-01", actualSales: 18600, forecastSales: 18000, categoryA: 6900, categoryB: 5400, categoryC: 6300 },
-  { date: "2024-05-15", actualSales: 19300, forecastSales: 18800, categoryA: 7200, categoryB: 5600, categoryC: 6500 },
-  { date: "2024-06-01", actualSales: 20100, forecastSales: 19500, categoryA: 7500, categoryB: 5800, categoryC: 6800 },
-  { date: "2024-06-15", actualSales: 20800, forecastSales: 20200, categoryA: 7800, categoryB: 6000, categoryC: 7000 },
-  { date: "2024-07-01", actualSales: 21600, forecastSales: 21000, categoryA: 8100, categoryB: 6200, categoryC: 7300 },
-  { date: "2024-07-15", actualSales: 22300, forecastSales: 21800, categoryA: 8400, categoryB: 6400, categoryC: 7500 },
-  { date: "2024-08-01", actualSales: 23100, forecastSales: 22500, categoryA: 8700, categoryB: 6600, categoryC: 7800 },
-  { date: "2024-08-15", actualSales: 23800, forecastSales: 23200, categoryA: 9000, categoryB: 6800, categoryC: 8000 },
-  { date: "2024-09-01", actualSales: 24600, forecastSales: 24000, categoryA: 9300, categoryB: 7000, categoryC: 8300 },
-  { date: "2024-09-15", actualSales: 25300, forecastSales: 24800, categoryA: 9600, categoryB: 7200, categoryC: 8500 },
-  { date: "2024-10-01", actualSales: 26100, forecastSales: 25500, categoryA: 9900, categoryB: 7400, categoryC: 8800 },
-  { date: "2024-10-15", actualSales: 26800, forecastSales: 26200, categoryA: 10200, categoryB: 7600, categoryC: 9000 },
-  { date: "2024-11-01", actualSales: 27600, forecastSales: 27000, categoryA: 10500, categoryB: 7800, categoryC: 9300 },
-  { date: "2024-11-15", actualSales: 28300, forecastSales: 27800, categoryA: 10800, categoryB: 8000, categoryC: 9500 },
-  { date: "2024-12-01", actualSales: 29100, forecastSales: 28500, categoryA: 11100, categoryB: 8200, categoryC: 9800 },
-  { date: "2024-12-15", actualSales: 29800, forecastSales: 29200, categoryA: 11400, categoryB: 8400, categoryC: 10000 },
-];
-
-// Category distribution data
-const categoryData = [
-  { name: "Electronics", value: 35 },
-  { name: "Clothing", value: 25 },
-  { name: "Home & Kitchen", value: 20 },
-  { name: "Sports", value: 15 },
-  { name: "Books", value: 5 },
+  {
+    date: "2024-01-01",
+    actualSales: 12500,
+    forecastSales: 12000,
+    categoryA: 4500,
+    categoryB: 3800,
+    categoryC: 4200,
+  },
+  {
+    date: "2024-01-15",
+    actualSales: 13200,
+    forecastSales: 12800,
+    categoryA: 4800,
+    categoryB: 4000,
+    categoryC: 4400,
+  },
+  {
+    date: "2024-02-01",
+    actualSales: 14100,
+    forecastSales: 13500,
+    categoryA: 5100,
+    categoryB: 4200,
+    categoryC: 4800,
+  },
+  {
+    date: "2024-02-15",
+    actualSales: 14800,
+    forecastSales: 14200,
+    categoryA: 5400,
+    categoryB: 4400,
+    categoryC: 5000,
+  },
+  {
+    date: "2024-03-01",
+    actualSales: 15600,
+    forecastSales: 15000,
+    categoryA: 5700,
+    categoryB: 4600,
+    categoryC: 5300,
+  },
+  {
+    date: "2024-03-15",
+    actualSales: 16300,
+    forecastSales: 15800,
+    categoryA: 6000,
+    categoryB: 4800,
+    categoryC: 5500,
+  },
+  {
+    date: "2024-04-01",
+    actualSales: 17100,
+    forecastSales: 16500,
+    categoryA: 6300,
+    categoryB: 5000,
+    categoryC: 5800,
+  },
+  {
+    date: "2024-04-15",
+    actualSales: 17800,
+    forecastSales: 17200,
+    categoryA: 6600,
+    categoryB: 5200,
+    categoryC: 6000,
+  },
+  {
+    date: "2024-05-01",
+    actualSales: 18600,
+    forecastSales: 18000,
+    categoryA: 6900,
+    categoryB: 5400,
+    categoryC: 6300,
+  },
+  {
+    date: "2024-05-15",
+    actualSales: 19300,
+    forecastSales: 18800,
+    categoryA: 7200,
+    categoryB: 5600,
+    categoryC: 6500,
+  },
+  {
+    date: "2024-06-01",
+    actualSales: 20100,
+    forecastSales: 19500,
+    categoryA: 7500,
+    categoryB: 5800,
+    categoryC: 6800,
+  },
+  {
+    date: "2024-06-15",
+    actualSales: 20800,
+    forecastSales: 20200,
+    categoryA: 7800,
+    categoryB: 6000,
+    categoryC: 7000,
+  },
+  {
+    date: "2024-07-01",
+    actualSales: 21600,
+    forecastSales: 21000,
+    categoryA: 8100,
+    categoryB: 6200,
+    categoryC: 7300,
+  },
+  {
+    date: "2024-07-15",
+    actualSales: 22300,
+    forecastSales: 21800,
+    categoryA: 8400,
+    categoryB: 6400,
+    categoryC: 7500,
+  },
+  {
+    date: "2024-08-01",
+    actualSales: 23100,
+    forecastSales: 22500,
+    categoryA: 8700,
+    categoryB: 6600,
+    categoryC: 7800,
+  },
+  {
+    date: "2024-08-15",
+    actualSales: 23800,
+    forecastSales: 23200,
+    categoryA: 9000,
+    categoryB: 6800,
+    categoryC: 8000,
+  },
+  {
+    date: "2024-09-01",
+    actualSales: 24600,
+    forecastSales: 24000,
+    categoryA: 9300,
+    categoryB: 7000,
+    categoryC: 8300,
+  },
+  {
+    date: "2024-09-15",
+    actualSales: 25300,
+    forecastSales: 24800,
+    categoryA: 9600,
+    categoryB: 7200,
+    categoryC: 8500,
+  },
+  {
+    date: "2024-10-01",
+    actualSales: 26100,
+    forecastSales: 25500,
+    categoryA: 9900,
+    categoryB: 7400,
+    categoryC: 8800,
+  },
+  {
+    date: "2024-10-15",
+    actualSales: 26800,
+    forecastSales: 26200,
+    categoryA: 10200,
+    categoryB: 7600,
+    categoryC: 9000,
+  },
+  {
+    date: "2024-11-01",
+    actualSales: 27600,
+    forecastSales: 27000,
+    categoryA: 10500,
+    categoryB: 7800,
+    categoryC: 9300,
+  },
+  {
+    date: "2024-11-15",
+    actualSales: 28300,
+    forecastSales: 27800,
+    categoryA: 10800,
+    categoryB: 8000,
+    categoryC: 9500,
+  },
+  {
+    date: "2024-12-01",
+    actualSales: 29100,
+    forecastSales: 28500,
+    categoryA: 11100,
+    categoryB: 8200,
+    categoryC: 9800,
+  },
+  {
+    date: "2024-12-15",
+    actualSales: 29800,
+    forecastSales: 29200,
+    categoryA: 11400,
+    categoryB: 8400,
+    categoryC: 10000,
+  },
 ];
 
 // Monthly comparison data
@@ -121,7 +293,9 @@ export function ChartAreaInteractive() {
   // Calculate growth rate
   const firstValue = filteredData[0]?.actualSales || 0;
   const lastValue = filteredData[filteredData.length - 1]?.actualSales || 0;
-  const growthRate = firstValue > 0 ? ((lastValue - firstValue) / firstValue) * 100 : 0;
+  const growthRate = firstValue > 0
+    ? ((lastValue - firstValue) / firstValue) * 100
+    : 0;
   const isPositiveGrowth = growthRate > 0;
 
   return (
@@ -132,7 +306,11 @@ export function ChartAreaInteractive() {
             Product Sales Analytics
           </CardTitle>
           <Badge variant="outline" className="font-normal">
-            {timeRange === "6m" ? "6 Months" : timeRange === "3m" ? "3 Months" : "1 Month"}
+            {timeRange === "6m"
+              ? "6 Months"
+              : timeRange === "3m"
+                ? "3 Months"
+                : "1 Month"}
           </Badge>
         </div>
         <CardDescription className="flex items-center gap-2">
@@ -202,7 +380,13 @@ export function ChartAreaInteractive() {
                         stopOpacity={0.1}
                       />
                     </linearGradient>
-                    <linearGradient id="fillForecast" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient
+                      id="fillForecast"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
                       <stop
                         offset="5%"
                         stopColor="hsl(var(--muted))"
@@ -215,7 +399,12 @@ export function ChartAreaInteractive() {
                       />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid vertical={false} stroke="hsl(var(--border))" strokeDasharray="4" opacity={0.5} />
+                  <CartesianGrid
+                    vertical={false}
+                    stroke="hsl(var(--border))"
+                    strokeDasharray="4"
+                    opacity={0.5}
+                  />
                   <XAxis
                     dataKey="date"
                     tickLine={false}
@@ -230,8 +419,8 @@ export function ChartAreaInteractive() {
                       });
                     }}
                   />
-                  <YAxis 
-                    tickLine={false} 
+                  <YAxis
+                    tickLine={false}
                     axisLine={false}
                     tickFormatter={(value) => `$${value.toLocaleString()}`}
                   />
@@ -246,7 +435,7 @@ export function ChartAreaInteractive() {
                             year: "numeric",
                           });
                         }}
-                        valueFormatter={(value) => `$${value.toLocaleString()}`}
+                        //valueFormatter={(value) => `$${value.toLocaleString()}`}
                         indicator="dot"
                       />
                     }
@@ -276,20 +465,25 @@ export function ChartAreaInteractive() {
           <div className="h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyData}>
-                <CartesianGrid vertical={false} stroke="hsl(var(--border))" strokeDasharray="4" opacity={0.5} />
+                <CartesianGrid
+                  vertical={false}
+                  stroke="hsl(var(--border))"
+                  strokeDasharray="4"
+                  opacity={0.5}
+                />
                 <XAxis
                   dataKey="month"
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
                 />
-                <YAxis 
-                  tickLine={false} 
+                <YAxis
+                  tickLine={false}
                   axisLine={false}
                   tickFormatter={(value) => `$${value.toLocaleString()}`}
                 />
                 <RechartsTooltip
-                  formatter={(value) => [`$${value.toLocaleString()}`, 'Sales']}
+                  formatter={(value) => [`$${value.toLocaleString()}`, "Sales"]}
                   labelFormatter={(label) => `Month: ${label}`}
                 />
                 <Bar
@@ -311,20 +505,25 @@ export function ChartAreaInteractive() {
           <div className="h-[350px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={monthlyData}>
-                <CartesianGrid vertical={false} stroke="hsl(var(--border))" strokeDasharray="4" opacity={0.5} />
+                <CartesianGrid
+                  vertical={false}
+                  stroke="hsl(var(--border))"
+                  strokeDasharray="4"
+                  opacity={0.5}
+                />
                 <XAxis
                   dataKey="month"
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
                 />
-                <YAxis 
-                  tickLine={false} 
+                <YAxis
+                  tickLine={false}
                   axisLine={false}
                   tickFormatter={(value) => `$${value.toLocaleString()}`}
                 />
                 <RechartsTooltip
-                  formatter={(value) => [`$${value.toLocaleString()}`, 'Sales']}
+                  formatter={(value) => [`$${value.toLocaleString()}`, "Sales"]}
                   labelFormatter={(label) => `Month: ${label}`}
                 />
                 <Bar
@@ -345,13 +544,13 @@ export function ChartAreaInteractive() {
       <Separator className="my-2" />
       <CardFooter className="flex items-center justify-between pt-4">
         <div className="flex flex-col gap-1">
-          <div className="text-sm font-medium text-muted-foreground">Growth Rate</div>
+          <div className="text-sm font-medium text-muted-foreground">
+            Growth Rate
+          </div>
           <div className="flex items-center gap-1 text-2xl font-bold">
-            {isPositiveGrowth ? (
-              <ArrowUpRight className="h-5 w-5 text-primary" />
-            ) : (
-              <ArrowDownRight className="h-5 w-5 text-destructive" />
-            )}
+            {isPositiveGrowth
+              ? <ArrowUpRight className="h-5 w-5 text-primary" />
+              : <ArrowDownRight className="h-5 w-5 text-destructive" />}
             {Math.abs(growthRate).toFixed(1)}%
           </div>
         </div>

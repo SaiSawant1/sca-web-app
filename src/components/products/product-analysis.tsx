@@ -3,25 +3,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
   ChartLegend,
   ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
 } from "@/components/ui/chart";
 import {
-  BarChart,
   Bar,
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
+  BarChart,
+  CartesianGrid,
   Cell,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
   XAxis,
   YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  Legend,
 } from "recharts";
 
 // Dummy data for charts
@@ -137,8 +134,7 @@ export function ProductAnalysis() {
                     fill="#8884d8"
                     dataKey="value"
                     label={({ name, percent }) =>
-                      `${name} ${(percent * 100).toFixed(0)}%`
-                    }
+                      `${name} ${(percent * 100).toFixed(0)}%`}
                   >
                     {categoryData.map((entry, index) => (
                       <Cell
@@ -182,8 +178,7 @@ export function ProductAnalysis() {
                     fill="#8884d8"
                     dataKey="value"
                     label={({ name, percent }) =>
-                      `${name} ${(percent * 100).toFixed(0)}%`
-                    }
+                      `${name} ${(percent * 100).toFixed(0)}%`}
                   >
                     {customerSegments.map((entry, index) => (
                       <Cell
@@ -229,4 +224,5 @@ export function ProductAnalysis() {
       </div>
     </div>
   );
-} 
+}
+
