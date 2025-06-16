@@ -78,6 +78,7 @@ export const ProductsInfoTabs = ({ product }: ProductsInfoTabsProps) => {
 
   useEffect(() => {
     fetchPrediction();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const profitMargin =

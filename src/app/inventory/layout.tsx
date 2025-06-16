@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/navbar";
+import { Suspense } from "react";
 
 export default function InventoryLayout({
   children,
@@ -14,7 +15,9 @@ export default function InventoryLayout({
           </div>
         </div>
         <main className="flex-1 overflow-auto">
-          {children}
+          <Suspense fallback={<div>loading....</div>}>
+            {children}
+          </Suspense>
         </main>
       </div>
     </div>

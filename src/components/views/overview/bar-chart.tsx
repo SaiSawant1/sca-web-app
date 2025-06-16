@@ -87,6 +87,7 @@ export function BarChartView() {
 
   useEffect(() => {
     execute({});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const currentTotal = chartData.reduce((acc, curr) => acc + curr.sale, 0);
