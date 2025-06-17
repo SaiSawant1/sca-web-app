@@ -42,6 +42,7 @@ import {
   ProductFormSchema,
   RegionEnum,
   SeasonEnum,
+  SubCategoryEnum,
 } from "./product-form-schema";
 import { toast } from "sonner";
 import { CreateProductAction } from "../../../../actions/product";
@@ -56,6 +57,7 @@ import {
 export function ProductForm() {
   const [error, setError] = useState("");
   const router = useRouter();
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
 
   const { execute, isLoading } = useAction(CreateProductAction, {
     onSuccess: () => {
@@ -255,7 +257,12 @@ export function ProductForm() {
                         <FormItem>
                           <FormLabel>Category</FormLabel>
                           <Select
-                            onValueChange={field.onChange}
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              setSelectedCategory(value);
+                              // Reset subcategory when category changes
+                              form.setValue("subCategory", "");
+                            }}
                             defaultValue={field.value}
                           >
                             <FormControl>
@@ -264,9 +271,7 @@ export function ProductForm() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {Object.values(ProductCategoryEnum.enum).map((
-                                category,
-                              ) => (
+                              {Object.values(ProductCategoryEnum.enum).map((category) => (
                                 <SelectItem key={category} value={category}>
                                   {category}
                                 </SelectItem>
@@ -287,12 +292,27 @@ export function ProductForm() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Sub-Category</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder="Enter sub-category"
-                              {...field}
-                            />
-                          </FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            disabled={!selectedCategory}
+                          >
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a sub-category" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {selectedCategory &&
+                                SubCategoryEnum[selectedCategory as keyof typeof SubCategoryEnum].map(
+                                  (subCategory) => (
+                                    <SelectItem key={subCategory} value={subCategory}>
+                                      {subCategory}
+                                    </SelectItem>
+                                  )
+                                )}
+                            </SelectContent>
+                          </Select>
                           <FormDescription>
                             Product sub-category.
                           </FormDescription>
